@@ -2,60 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FlowThingy External — Step 2 of 4</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#0a0a0f;color:#ddd;font-family:'Segoe UI',sans-serif;
-       min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .card{background:#111;border:1px solid #1e1e2e;border-radius:12px;padding:40px;
-        max-width:480px;width:90%;text-align:center;}
-  .logo{font-size:2em;font-weight:900;color:#cc1111;letter-spacing:2px;margin-bottom:6px;}
-  .logo span{color:#fff;}
-  .sub{color:#666;font-size:0.9em;margin-bottom:30px;}
-  .steps{display:flex;justify-content:center;gap:8px;margin-bottom:30px;}
-  .step{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
-        justify-content:center;font-weight:700;font-size:0.9em;}
-  .step.active{background:#cc1111;color:#fff;}
-  .step.done{background:#1a4a1a;color:#44ff88;border:1px solid #44ff88;}
-  .step.pending{background:#1a1a2a;color:#444;border:1px solid #222;}
-  .title{font-size:1.2em;font-weight:700;margin-bottom:8px;}
-  .desc{color:#888;font-size:0.9em;margin-bottom:24px;line-height:1.6;}
-  .btn{display:block;background:#cc1111;color:#fff;padding:14px 32px;
-       border-radius:8px;text-decoration:none;font-weight:700;font-size:1em;
-       transition:background 0.2s;width:100%;border:none;cursor:pointer;}
-  .btn:hover{background:#ff2222;}
-  .note{color:#555;font-size:0.8em;margin-top:16px;}
-  .check{color:#44ff88;font-size:1.1em;margin-bottom:16px;}
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlowThingy — Step 2</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="card">
-  <div class="logo">Flow<span>Thingy</span></div>
-  <div class="sub">External Client — Key System</div>
-
-  <div class="steps">
-    <div class="step done">✓</div>
-    <div class="step active">2</div>
-    <div class="step pending">3</div>
-    <div class="step pending">4</div>
+<div class="wrap">
+  <div class="brand">
+    <div class="brand-name">Flow<em>Thingy</em></div>
+    <div class="brand-tag">External Client · Key Portal</div>
   </div>
-
-  <div class="check">✅ Step 1 complete!</div>
-  <div class="title">Step 2 of 4</div>
-  <div class="desc">You're halfway there! Complete this link to continue to Step 3.</div>
-
-  <a class="btn" id="goBtn" href="#">Continue to Linkvertise →</a>
-  <p class="note">Only 2 more steps after this!</p>
+  <div class="card">
+    <div class="steps-row">
+      <div class="step-dot done">✓</div>
+      <div class="step-line"></div>
+      <div class="step-dot active">2</div>
+      <div class="step-line"></div>
+      <div class="step-dot pending">3</div>
+      <div class="step-line"></div>
+      <div class="step-dot pending">4</div>
+    </div>
+    <div class="card-title">Step 1 done — keep going</div>
+    <div class="card-desc">Good job. Two more after this. Just complete the link below and you're halfway there.</div>
+    <a class="btn" id="goBtn">Continue &rarr;</a>
+    <p class="note">Don't skip — each step is required for the key to generate.</p>
+  </div>
 </div>
-
 <script>
-  const LINKVERTISE_2 = "https://linkvertise.com/REPLACE_WITH_YOUR_LINK_2";
-  // Pass username forward via URL param
-  const params = new URLSearchParams(window.location.search);
-  const user   = params.get('r') || sessionStorage.getItem('ft_user') || '';
-  if (user) sessionStorage.setItem('ft_user', user);
-  document.getElementById('goBtn').href = LINKVERTISE_2 + "?r=" + encodeURIComponent(user);
+const LINK2 = "https://linkvertise.com/REPLACE_LINK_2";
+const p     = new URLSearchParams(location.search);
+const user  = p.get('r') || sessionStorage.getItem('ft_user') || '';
+if (user) sessionStorage.setItem('ft_user', user);
+document.getElementById('goBtn').onclick = () => {
+  location.href = LINK2 + "?r=" + encodeURIComponent(user);
+};
 </script>
 </body>
 </html>
