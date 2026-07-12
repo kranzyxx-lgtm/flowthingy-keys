@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FlowThingy — Last Step</title>
+<title>FlowThingy — Final Step</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,28 +14,35 @@
   </div>
   <div class="card">
     <div class="steps-row">
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
       <div class="step-dot active">4</div>
     </div>
-    <div class="card-title">Final step — then you're done</div>
-    <div class="card-desc">Complete this last one and your key will be waiting on the other side. No more steps after this.</div>
-    <a class="btn" id="goBtn">Get my key &rarr;</a>
-    <p class="note">Key generates instantly, valid for 24 hours.</p>
+    <div id="content"><div class="card-desc">Verifying...</div></div>
   </div>
 </div>
 <script>
-const LINK4 = "https://link-target.net/1365538/stNosS21GqCR";
-const p     = new URLSearchParams(location.search);
-const user  = p.get('r') || sessionStorage.getItem('ft_user') || '';
-if (user) sessionStorage.setItem('ft_user', user);
-document.getElementById('goBtn').onclick = () => {
-  location.href = LINK4 + "?r=" + encodeURIComponent(user);
-};
+const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
+const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
+const LINK4  = "https://link-target.net/1365538/stNosS21GqCR";
+
+function randTok() { return Math.random().toString(36).substr(2,10)+Math.random().toString(36).substr(2,10); }
+
+async function init() {
+  const p=new URLSearchParams(location.search), token=p.get('t'), user=p.get('r')||sessionStorage.getItem('ft_user')||'';
+  const el=document.getElementById('content');
+  if(!token||!user){el.innerHTML=`<p class="err">Invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;}
+  const res=await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.3&used=eq.false&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const rows=await res.json();
+  if(!rows||rows.length===0||new Date(rows[0].expires_at)<new Date()){el.innerHTML=`<p class="err">Expired. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;}
+  await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`,{method:'PATCH',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},body:JSON.stringify({used:true})});
+  const tok4=randTok(), exp=new Date(Date.now()+30*60*1000).toISOString();
+  await fetch(`${SB_URL}/rest/v1/step_tokens`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},body:JSON.stringify({token:tok4,step:4,minecraft_user:user,expires_at:exp})});
+  sessionStorage.setItem('ft_user',user);
+  el.innerHTML=`<div class="card-title ok">Step 3 done</div><div class="card-desc">Final step — complete this last link and your key drops instantly.</div><a class="btn" href="${LINK4}?t=${tok4}&r=${encodeURIComponent(user)}">Get my key &rarr;</a><p class="note">Key generates automatically after this.</p>`;
+}
+init();
 </script>
 </body>
 </html>

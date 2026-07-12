@@ -14,103 +14,82 @@
   </div>
   <div class="card">
     <div class="steps-row">
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
       <div class="step-dot done">✓</div>
     </div>
-    <div id="content">
-      <div class="card-desc" style="text-align:center">generating your key...</div>
-    </div>
+    <div id="content"><div class="card-desc" style="text-align:center">generating your key...</div></div>
   </div>
 </div>
-
 <script>
 const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
 const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
 
 function randKey() {
-  const s = () => Math.random().toString(36).substr(2,4).toUpperCase();
+  const s=()=>Math.random().toString(36).substr(2,4).toUpperCase();
   return `FT-${s()}-${s()}-${s()}-${s()}`;
 }
 
 async function run() {
-  const p    = new URLSearchParams(location.search);
-  const user = p.get('r') || sessionStorage.getItem('ft_user') || '';
-  const el   = document.getElementById('content');
+  const p=new URLSearchParams(location.search), token=p.get('t'), user=p.get('r')||sessionStorage.getItem('ft_user')||'';
+  const el=document.getElementById('content');
 
-  if (!user) {
-    el.innerHTML = `<p class="err">No username found. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;
-    return;
+  // Must have a valid step-4 token to get here
+  if(!token||!user){el.innerHTML=`<p class="err">No valid session. <a href="step1.html" style="color:var(--red)">Start from step 1</a></p>`;return;}
+
+  const res=await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.4&used=eq.false&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const rows=await res.json();
+  if(!rows||rows.length===0||new Date(rows[0].expires_at)<new Date()){
+    el.innerHTML=`<p class="err">Session expired or invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;
   }
 
-  // Check if they already have a valid key
-  const chk = await fetch(
-    `${SB_URL}/rest/v1/licenses?minecraft_user=eq.${encodeURIComponent(user)}&activated=eq.true&select=key,expires_at`,
-    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
-  );
-  const rows = await chk.json();
-  const now  = new Date();
-  const live = Array.isArray(rows) && rows.find(r => new Date(r.expires_at) > now);
-
-  if (live) { show(live.key, new Date(live.expires_at), user, el); return; }
-
-  // Generate new key
-  const key = randKey();
-  const exp = new Date(now.getTime() + 24*3600*1000).toISOString();
-
-  const ins = await fetch(`${SB_URL}/rest/v1/licenses`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SB_KEY,
-      Authorization: `Bearer ${SB_KEY}`,
-      Prefer: 'return=minimal'
-    },
-    body: JSON.stringify({
-      key, minecraft_user: user,
-      expires_at: exp,
-      activated: true,
-      activated_at: now.toISOString(),
-      link_used: true
-    })
+  // Mark step-4 token used
+  await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`,{
+    method:'PATCH',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},
+    body:JSON.stringify({used:true})
   });
 
-  if (ins.ok) { show(key, new Date(exp), user, el); }
-  else { el.innerHTML = `<p class="err">Something went wrong. Try again or start over.</p>`; }
+  // Check if user already has a live key
+  const chk=await fetch(`${SB_URL}/rest/v1/licenses?minecraft_user=eq.${encodeURIComponent(user)}&activated=eq.true&select=key,expires_at`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const existing=await chk.json();
+  const live=Array.isArray(existing)&&existing.find(r=>new Date(r.expires_at)>new Date());
+  if(live){show(live.key,new Date(live.expires_at),user,el);return;}
+
+  // Generate fresh key
+  const key=randKey(), exp=new Date(Date.now()+24*3600*1000).toISOString();
+  const ins=await fetch(`${SB_URL}/rest/v1/licenses`,{
+    method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},
+    body:JSON.stringify({key,minecraft_user:user,expires_at:exp,activated:true,activated_at:new Date().toISOString(),link_used:true})
+  });
+  if(ins.ok){show(key,new Date(exp),user,el);}
+  else{el.innerHTML=`<p class="err">Error generating key. Try again.</p>`;}
 }
 
-function show(key, exp, user, el) {
-  const timeLeft = Math.round((exp - new Date()) / 3600000);
-  el.innerHTML = `
-    <div class="card-title ok">Key generated</div>
-    <div class="card-desc">Welcome back, <b>${user}</b>. Your key is below — copy it into your key file.</div>
+function show(key,exp,user,el){
+  const h=Math.round((exp-new Date())/3600000);
+  el.innerHTML=`
+    <div class="card-title ok">Your key is ready</div>
+    <div class="card-desc">Welcome, <b>${user}</b>. Copy the key below into your key file.</div>
     <div class="key-display" id="kd">${key}</div>
     <button class="btn" onclick="copy()">Copy key</button>
-    <p class="warn">⏱ Expires in ~${timeLeft}h — come back tomorrow to renew.</p>
+    <p class="warn">⏱ Expires in ~${h}h — come back tomorrow and do the steps again.</p>
     <div class="how">
       <b>How to activate:</b><br>
       1. Open <code>%APPDATA%\\.minecraft</code> in File Explorer<br>
       2. Create a file named <code>flowthingy.key</code><br>
-      3. Open it in Notepad and paste your key<br>
-      4. Save it and launch Minecraft — done.
+      3. Open with Notepad, paste your key, save<br>
+      4. Launch Minecraft — you're in.
     </div>
   `;
 }
 
-function copy() {
-  const k = document.getElementById('kd');
-  if (!k) return;
-  navigator.clipboard.writeText(k.innerText).then(() => {
-    const btn = document.querySelector('.btn');
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy key', 2000);
+function copy(){
+  navigator.clipboard.writeText(document.getElementById('kd').innerText).then(()=>{
+    const b=document.querySelector('.btn');
+    b.textContent='Copied!';setTimeout(()=>b.textContent='Copy key',2000);
   });
 }
-
 run();
 </script>
 </body>

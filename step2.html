@@ -12,30 +12,67 @@
     <div class="brand-name">Flow<em>Thingy</em></div>
     <div class="brand-tag">External Client · Key Portal</div>
   </div>
-  <div class="card">
+  <div class="card" id="card">
     <div class="steps-row">
-      <div class="step-dot done">✓</div>
-      <div class="step-line"></div>
-      <div class="step-dot active">2</div>
-      <div class="step-line"></div>
-      <div class="step-dot pending">3</div>
-      <div class="step-line"></div>
+      <div class="step-dot done">✓</div><div class="step-line"></div>
+      <div class="step-dot active">2</div><div class="step-line"></div>
+      <div class="step-dot pending">3</div><div class="step-line"></div>
       <div class="step-dot pending">4</div>
     </div>
-    <div class="card-title">Step 1 done — keep going</div>
-    <div class="card-desc">Good job. Two more after this. Just complete the link below and you're halfway there.</div>
-    <a class="btn" id="goBtn">Continue &rarr;</a>
-    <p class="note">Don't skip — each step is required for the key to generate.</p>
+    <div id="content"><div class="card-desc">Verifying...</div></div>
   </div>
 </div>
 <script>
-const LINK2 = "https://link-hub.net/1365538/BEIVnEE0ZvHy";
-const p     = new URLSearchParams(location.search);
-const user  = p.get('r') || sessionStorage.getItem('ft_user') || '';
-if (user) sessionStorage.setItem('ft_user', user);
-document.getElementById('goBtn').onclick = () => {
-  location.href = LINK2 + "?r=" + encodeURIComponent(user);
-};
+const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
+const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
+const LINK2  = "https://link-hub.net/1365538/BEIVnEE0ZvHy";
+
+function randTok() {
+  return Math.random().toString(36).substr(2,10) + Math.random().toString(36).substr(2,10);
+}
+
+async function init() {
+  const p     = new URLSearchParams(location.search);
+  const token = p.get('t');
+  const user  = p.get('r') || sessionStorage.getItem('ft_user') || '';
+  const el    = document.getElementById('content');
+
+  if (!token || !user) { el.innerHTML = `<p class="err">Invalid session. <a href="step1.html" style="color:var(--red)">Start over</a></p>`; return; }
+
+  // Validate token exists, is step 1, not used, not expired
+  const res  = await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.1&used=eq.false&select=*`,
+    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
+  const rows = await res.json();
+
+  if (!rows || rows.length === 0 || new Date(rows[0].expires_at) < new Date()) {
+    el.innerHTML = `<p class="err">Session expired or invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`; return;
+  }
+
+  // Mark token used
+  await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type':'application/json', apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}`, Prefer:'return=minimal' },
+    body: JSON.stringify({ used: true })
+  });
+
+  // Create step-2 token
+  const tok2 = randTok();
+  const exp  = new Date(Date.now() + 30*60*1000).toISOString();
+  await fetch(`${SB_URL}/rest/v1/step_tokens`, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}`, Prefer:'return=minimal' },
+    body: JSON.stringify({ token: tok2, step: 2, minecraft_user: user, expires_at: exp })
+  });
+
+  sessionStorage.setItem('ft_user', user);
+  el.innerHTML = `
+    <div class="card-title ok">Step 1 done</div>
+    <div class="card-desc">Good job. Two more after this. Complete the link below.</div>
+    <a class="btn" href="${LINK2}?t=${tok2}&r=${encodeURIComponent(user)}">Continue &rarr;</a>
+    <p class="note">Don't skip — each step is required.</p>
+  `;
+}
+init();
 </script>
 </body>
 </html>

@@ -12,45 +12,60 @@
     <div class="brand-name">Flow<em>Thingy</em></div>
     <div class="brand-tag">External Client · Key Portal</div>
   </div>
-
   <div class="card">
     <div class="steps-row">
-      <div class="step-dot active">1</div>
-      <div class="step-line"></div>
-      <div class="step-dot pending">2</div>
-      <div class="step-line"></div>
-      <div class="step-dot pending">3</div>
-      <div class="step-line"></div>
+      <div class="step-dot active">1</div><div class="step-line"></div>
+      <div class="step-dot pending">2</div><div class="step-line"></div>
+      <div class="step-dot pending">3</div><div class="step-line"></div>
       <div class="step-dot pending">4</div>
     </div>
-
     <div class="card-title">Enter your username</div>
-    <div class="card-desc">Type your Minecraft username then hit the button. You'll go through 4 short steps — complete them all and your key generates automatically. Valid 24 hours.</div>
-
+    <div class="card-desc">Type your Minecraft username then complete 4 short steps. Your key generates automatically at the end. Valid 24 hours — come back daily.</div>
     <label>Minecraft Username</label>
     <input class="input" id="user" placeholder="your username here" maxlength="32" autocomplete="off" />
-
-    <a class="btn off" id="goBtn">Step 1 of 4 &rarr;</a>
-    <p class="note">Takes about 2 minutes. Come back daily to renew.</p>
+    <a class="btn off" id="goBtn">Start &rarr;</a>
+    <p class="note">Each step must be completed in order.</p>
   </div>
 </div>
-
 <script>
-const LINK1 = "https://link-hub.net/1365538/rLTEsDhgTS3n";
-const inp   = document.getElementById('user');
-const btn   = document.getElementById('goBtn');
+const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
+const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
+const LINK1  = "https://link-hub.net/1365538/rLTEsDhgTS3n";
+
+function randTok() {
+  return Math.random().toString(36).substr(2,10) + Math.random().toString(36).substr(2,10);
+}
+
+const inp = document.getElementById('user');
+const btn = document.getElementById('goBtn');
 
 inp.addEventListener('input', () => {
-  const v = inp.value.trim();
-  if (v.length >= 2) {
-    btn.classList.remove('off');
-    btn.onclick = () => {
-      sessionStorage.setItem('ft_user', v);
-      window.location.href = LINK1 + "?r=" + encodeURIComponent(v);
-    };
+  btn.classList.toggle('off', inp.value.trim().length < 2);
+});
+
+btn.addEventListener('click', async () => {
+  const user = inp.value.trim();
+  if (user.length < 2) return;
+
+  // Create a step-1 token in Supabase
+  const token = randTok();
+  const exp   = new Date(Date.now() + 30*60*1000).toISOString(); // 30min to complete steps
+
+  const res = await fetch(`${SB_URL}/rest/v1/step_tokens`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
+      Prefer: 'return=minimal'
+    },
+    body: JSON.stringify({ token, step: 1, minecraft_user: user, expires_at: exp })
+  });
+
+  if (res.ok) {
+    sessionStorage.setItem('ft_user', user);
+    window.location.href = LINK1 + "?t=" + token + "&r=" + encodeURIComponent(user);
   } else {
-    btn.classList.add('off');
-    btn.onclick = null;
+    alert('Error starting session. Try again.');
   }
 });
 </script>
