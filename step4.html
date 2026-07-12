@@ -30,7 +30,7 @@ const LINK4  = "https://link-target.net/1365538/stNosS21GqCR";
 function randTok() { return Math.random().toString(36).substr(2,10)+Math.random().toString(36).substr(2,10); }
 
 async function init() {
-  const p=new URLSearchParams(location.search), token=p.get('t'), user=p.get('r')||sessionStorage.getItem('ft_user')||'';
+  const token=localStorage.getItem('ft_token3'), user=localStorage.getItem('ft_user')||'';
   const el=document.getElementById('content');
   if(!token||!user){el.innerHTML=`<p class="err">Invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;}
   const res=await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.3&used=eq.false&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
@@ -39,8 +39,9 @@ async function init() {
   await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`,{method:'PATCH',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},body:JSON.stringify({used:true})});
   const tok4=randTok(), exp=new Date(Date.now()+30*60*1000).toISOString();
   await fetch(`${SB_URL}/rest/v1/step_tokens`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},body:JSON.stringify({token:tok4,step:4,minecraft_user:user,expires_at:exp})});
-  sessionStorage.setItem('ft_user',user);
-  el.innerHTML=`<div class="card-title ok">Step 3 done</div><div class="card-desc">Final step — complete this last link and your key drops instantly.</div><a class="btn" href="${LINK4}?t=${tok4}&r=${encodeURIComponent(user)}">Get my key &rarr;</a><p class="note">Key generates automatically after this.</p>`;
+  localStorage.setItem('ft_token4',tok4);
+  el.innerHTML=`<div class="card-title ok">Step 3 done</div><div class="card-desc">Final step — complete this last link and your key drops instantly.</div><a class="btn" id="lnk">Get my key &rarr;</a><p class="note">Key generates automatically after this.</p>`;
+  document.getElementById('lnk').onclick=()=>{window.location.href=LINK4;};
 }
 init();
 </script>

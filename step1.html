@@ -63,7 +63,9 @@ btn.addEventListener('click', async () => {
 
   if (res.ok) {
     sessionStorage.setItem('ft_user', user);
-    window.location.href = LINK1 + "?t=" + token + "&r=" + encodeURIComponent(user);
+    localStorage.setItem('ft_token1', token);
+    localStorage.setItem('ft_user', user);
+    window.location.href = LINK1;
   } else {
     alert('Error starting session. Try again.');
   }

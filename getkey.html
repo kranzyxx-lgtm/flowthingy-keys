@@ -32,23 +32,23 @@ function randKey() {
 }
 
 async function run() {
-  const p=new URLSearchParams(location.search), token=p.get('t'), user=p.get('r')||sessionStorage.getItem('ft_user')||'';
+  const token=localStorage.getItem('ft_token4'), user=localStorage.getItem('ft_user')||'';
   const el=document.getElementById('content');
 
-  // Must have a valid step-4 token to get here
   if(!token||!user){el.innerHTML=`<p class="err">No valid session. <a href="step1.html" style="color:var(--red)">Start from step 1</a></p>`;return;}
 
   const res=await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.4&used=eq.false&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
   const rows=await res.json();
   if(!rows||rows.length===0||new Date(rows[0].expires_at)<new Date()){
-    el.innerHTML=`<p class="err">Session expired or invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;
+    el.innerHTML=`<p class="err">Session expired. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;
   }
 
-  // Mark step-4 token used
+  // Mark step-4 token used and clear localStorage tokens
   await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`,{
     method:'PATCH',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},
     body:JSON.stringify({used:true})
   });
+  ['ft_token1','ft_token2','ft_token3','ft_token4'].forEach(k=>localStorage.removeItem(k));
 
   // Check if user already has a live key
   const chk=await fetch(`${SB_URL}/rest/v1/licenses?minecraft_user=eq.${encodeURIComponent(user)}&activated=eq.true&select=key,expires_at`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
