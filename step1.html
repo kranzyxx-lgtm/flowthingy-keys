@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowThingy External — Step 1 of 4</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0a0f;color:#ddd;font-family:'Segoe UI',sans-serif;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .card{background:#111;border:1px solid #1e1e2e;border-radius:12px;padding:40px;
+        max-width:480px;width:90%;text-align:center;}
+  .logo{font-size:2em;font-weight:900;color:#cc1111;letter-spacing:2px;margin-bottom:6px;}
+  .logo span{color:#fff;}
+  .sub{color:#666;font-size:0.9em;margin-bottom:30px;}
+  .steps{display:flex;justify-content:center;gap:8px;margin-bottom:30px;}
+  .step{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+        justify-content:center;font-weight:700;font-size:0.9em;}
+  .step.active{background:#cc1111;color:#fff;}
+  .step.done{background:#1a4a1a;color:#44ff88;border:1px solid #44ff88;}
+  .step.pending{background:#1a1a2a;color:#444;border:1px solid #222;}
+  .title{font-size:1.2em;font-weight:700;margin-bottom:8px;}
+  .desc{color:#888;font-size:0.9em;margin-bottom:24px;line-height:1.6;}
+  .btn{display:inline-block;background:#cc1111;color:#fff;padding:14px 32px;
+       border-radius:8px;text-decoration:none;font-weight:700;font-size:1em;
+       transition:background 0.2s;border:none;cursor:pointer;width:100%;}
+  .btn:hover{background:#ff2222;}
+  .btn.disabled{background:#333;color:#666;cursor:not-allowed;pointer-events:none;}
+  .note{color:#555;font-size:0.8em;margin-top:16px;}
+  .username-input{width:100%;padding:12px;background:#0d0d1a;border:1px solid #222;
+                  border-radius:6px;color:#fff;font-size:1em;margin-bottom:16px;
+                  outline:none;}
+  .username-input:focus{border-color:#cc1111;}
+  label{display:block;text-align:left;color:#888;font-size:0.85em;margin-bottom:6px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Flow<span>Thingy</span></div>
+  <div class="sub">External Client — Key System</div>
+
+  <div class="steps">
+    <div class="step active">1</div>
+    <div class="step pending">2</div>
+    <div class="step pending">3</div>
+    <div class="step pending">4</div>
+  </div>
+
+  <div class="title">Step 1 — Enter Your Username</div>
+  <div class="desc">Enter your Minecraft username then complete the link below to proceed to Step 2.</div>
+
+  <label>Minecraft Username</label>
+  <input class="username-input" id="username" placeholder="e.g. KranzyX" maxlength="32" />
+
+  <a id="linkBtn" class="btn disabled" onclick="proceed()">Continue to Linkvertise →</a>
+  <p class="note">Complete the link to unlock the next step. Your key will be valid for 24 hours.</p>
+</div>
+
+<script>
+  const input = document.getElementById('username');
+  const btn   = document.getElementById('linkBtn');
+
+  // Your Linkvertise link 1 goes here (destination = step2.html)
+  const LINKVERTISE_1 = "https://linkvertise.com/REPLACE_WITH_YOUR_LINK_1";
+
+  input.addEventListener('input', () => {
+    if (input.value.trim().length >= 2) {
+      btn.classList.remove('disabled');
+      btn.href = LINKVERTISE_1;
+    } else {
+      btn.classList.add('disabled');
+    }
+  });
+
+  function proceed() {
+    const user = input.value.trim();
+    if (user.length < 2) return;
+    // Save username to sessionStorage so step pages can read it
+    sessionStorage.setItem('ft_user', user);
+    // Redirect to Linkvertise
+    window.location.href = LINKVERTISE_1 + "?r=" + encodeURIComponent(user);
+  }
+</script>
+</body>
+</html>
