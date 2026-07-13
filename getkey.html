@@ -68,7 +68,10 @@ async function run() {
     body:JSON.stringify({key,minecraft_user:user,expires_at:exp,activated:true,activated_at:new Date().toISOString(),link_used:true})
   });
   if(ins.ok){show(key,new Date(exp),user,el);}
-  else{el.innerHTML=`<p class="err">Error generating key. Try again.</p>`;}
+  else{
+    const errText = await ins.text();
+    el.innerHTML=`<p class="err">Error (${ins.status}): ${errText}</p>`;
+  }
 }
 
 function show(key,exp,user,el){
