@@ -27,8 +27,12 @@ const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
 const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
 
 function randKey() {
-  const s=()=>Math.random().toString(36).substr(2,4).toUpperCase();
-  return `FT-${s()}-${s()}-${s()}-${s()}`;
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let key = 'FT';
+  for (let i = 0; i < 40; i++) {
+    key += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return key;
 }
 
 async function run() {
