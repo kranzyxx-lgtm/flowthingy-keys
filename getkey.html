@@ -33,9 +33,14 @@ function randKey() {
 
 async function run() {
   const token=localStorage.getItem('ft_token4'), user=localStorage.getItem('ft_user')||'';
+  const leftAt=parseInt(localStorage.getItem('ft_left_at')||'0');
   const el=document.getElementById('content');
 
   if(!token||!user){el.innerHTML=`<p class="err">No valid session. <a href="step1.html" style="color:var(--red)">Start from step 1</a></p>`;return;}
+  if(leftAt===0||(Date.now()-leftAt)/1000<8){
+    ['ft_token1','ft_token2','ft_token3','ft_token4','ft_left_at'].forEach(k=>localStorage.removeItem(k));
+    el.innerHTML=`<p class="err">Bypass detected. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;
+  }
 
   const res=await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.4&used=eq.false&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
   const rows=await res.json();

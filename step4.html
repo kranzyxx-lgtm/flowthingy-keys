@@ -31,8 +31,13 @@ function randTok() { return Math.random().toString(36).substr(2,10)+Math.random(
 
 async function init() {
   const token=localStorage.getItem('ft_token3'), user=localStorage.getItem('ft_user')||'';
+  const leftAt=parseInt(localStorage.getItem('ft_left_at')||'0');
   const el=document.getElementById('content');
   if(!token||!user){el.innerHTML=`<p class="err">Invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;}
+  if(leftAt===0||(Date.now()-leftAt)/1000<8){
+    ['ft_token1','ft_token2','ft_token3','ft_token4','ft_left_at'].forEach(k=>localStorage.removeItem(k));
+    el.innerHTML=`<p class="err">Bypass detected. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;
+  }
   const res=await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.3&used=eq.false&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
   const rows=await res.json();
   if(!rows||rows.length===0||new Date(rows[0].expires_at)<new Date()){el.innerHTML=`<p class="err">Expired. <a href="step1.html" style="color:var(--red)">Start over</a></p>`;return;}
@@ -41,7 +46,10 @@ async function init() {
   await fetch(`${SB_URL}/rest/v1/step_tokens`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},body:JSON.stringify({token:tok4,step:4,minecraft_user:user,expires_at:exp})});
   localStorage.setItem('ft_token4',tok4);
   el.innerHTML=`<div class="card-title ok">Step 3 done</div><div class="card-desc">Final step — complete this last link and your key drops instantly.</div><a class="btn" id="lnk">Get my key &rarr;</a><p class="note">Key generates automatically after this.</p>`;
-  document.getElementById('lnk').onclick=()=>{window.location.href=LINK4;};
+  document.getElementById('lnk').onclick=()=>{
+    localStorage.setItem('ft_left_at', Date.now().toString());
+    window.location.href=LINK4;
+  };
 }
 init();
 </script>
