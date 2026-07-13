@@ -25,7 +25,10 @@
 <script>
 const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
 const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
-const LINK4  = "https://link-target.net/1365538/stNosS21GqCR";
+const LINK4 = {
+  linkvertise: "https://link-target.net/1365538/stNosS21GqCR",
+  workink:     "https://work.ink/2JPY/flowthingy-final"
+};
 
 function randTok() { return Math.random().toString(36).substr(2,10)+Math.random().toString(36).substr(2,10); }
 
@@ -48,7 +51,8 @@ async function init() {
   el.innerHTML=`<div class="card-title ok">Step 3 done</div><div class="card-desc">Final step — complete this last link and your key drops instantly.</div><a class="btn" id="lnk">Get my key &rarr;</a><p class="note">Key generates automatically after this.</p>`;
   document.getElementById('lnk').onclick=()=>{
     localStorage.setItem('ft_left_at', Date.now().toString());
-    window.location.href=LINK4;
+    const m=localStorage.getItem('ft_method')||'linkvertise';
+    window.location.href=LINK4[m];
   };
 }
 init();

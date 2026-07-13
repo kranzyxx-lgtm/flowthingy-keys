@@ -25,7 +25,10 @@
 <script>
 const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
 const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
-const LINK2  = "https://link-hub.net/1365538/BEIVnEE0ZvHy";
+const LINK2 = {
+  linkvertise: "https://link-hub.net/1365538/BEIVnEE0ZvHy",
+  workink:     "https://work.ink/2JPY/flowthingy-step3"
+};
 
 function randTok() {
   return Math.random().toString(36).substr(2,10) + Math.random().toString(36).substr(2,10);
@@ -87,7 +90,8 @@ async function init() {
   `;
   document.getElementById('lnk').onclick = () => {
     localStorage.setItem('ft_left_at', Date.now().toString());
-    window.location.href = LINK2;
+    const m = localStorage.getItem('ft_method') || 'linkvertise';
+    window.location.href = LINK2[m];
   };
 }
 init();

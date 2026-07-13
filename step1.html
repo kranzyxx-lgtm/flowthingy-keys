@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FlowThingy — Get Key</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.choice-row { display: flex; gap: 12px; margin-top: 6px; }
+.choice-btn {
+  flex: 1; padding: 14px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg3); cursor: pointer; text-align: center;
+  transition: border-color 0.15s, background 0.15s; color: var(--text);
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 600;
+}
+.choice-btn:hover { border-color: var(--red); background: #1a0808; }
+.choice-btn.selected { border-color: var(--red); background: #1a0808; }
+.choice-btn .badge {
+  display: inline-block; font-size: 0.7rem; background: var(--red);
+  color: #fff; padding: 1px 6px; border-radius: 4px; margin-top: 4px;
+}
+.choice-btn .badge.green { background: #1a6a2a; color: #44ff88; }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -20,53 +36,72 @@
       <div class="step-dot pending">4</div>
     </div>
     <div class="card-title">Enter your username</div>
-    <div class="card-desc">Type your Minecraft username then complete 4 short steps. Your key generates automatically at the end. Valid 24 hours — come back daily.</div>
+    <div class="card-desc">Type your Minecraft username, pick your preferred verification method, then complete 4 short steps. Key is valid 24 hours.</div>
+
     <label>Minecraft Username</label>
     <input class="input" id="user" placeholder="your username here" maxlength="32" autocomplete="off" />
-    <a class="btn off" id="goBtn">Start &rarr;</a>
-    <p class="note">Each step must be completed in order.</p>
+
+    <label style="margin-top:4px">Verification Method</label>
+    <div class="choice-row">
+      <div class="choice-btn selected" id="btn-lv" onclick="selectMethod('linkvertise')">
+        Linkvertise
+        <br><span class="badge">Popular</span>
+      </div>
+      <div class="choice-btn" id="btn-wi" onclick="selectMethod('workink')">
+        work.ink
+        <br><span class="badge green">Alternative</span>
+      </div>
+    </div>
+
+    <a class="btn off" id="goBtn" style="margin-top:14px">Start &rarr;</a>
+    <p class="note">Each step must be completed in order. No skipping.</p>
   </div>
 </div>
+
 <script>
 const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
 const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
-const LINK1  = "https://link-hub.net/1365538/rLTEsDhgTS3n";
+
+const LINKS = {
+  linkvertise: "https://link-hub.net/1365538/rLTEsDhgTS3n",
+  workink:     "https://work.ink/2JPY/flowthingy-step2"
+};
+
+let method = 'linkvertise';
+
+function selectMethod(m) {
+  method = m;
+  document.getElementById('btn-lv').classList.toggle('selected', m==='linkvertise');
+  document.getElementById('btn-wi').classList.toggle('selected', m==='workink');
+}
 
 function randTok() {
-  return Math.random().toString(36).substr(2,10) + Math.random().toString(36).substr(2,10);
+  return Math.random().toString(36).substr(2,10)+Math.random().toString(36).substr(2,10);
 }
 
 const inp = document.getElementById('user');
 const btn = document.getElementById('goBtn');
-
-inp.addEventListener('input', () => {
-  btn.classList.toggle('off', inp.value.trim().length < 2);
-});
+inp.addEventListener('input', () => btn.classList.toggle('off', inp.value.trim().length < 2));
 
 btn.addEventListener('click', async () => {
   const user = inp.value.trim();
   if (user.length < 2) return;
 
-  // Create a step-1 token in Supabase
   const token = randTok();
-  const exp   = new Date(Date.now() + 30*60*1000).toISOString(); // 30min to complete steps
+  const exp   = new Date(Date.now() + 30*60*1000).toISOString();
 
   const res = await fetch(`${SB_URL}/rest/v1/step_tokens`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
-      Prefer: 'return=minimal'
-    },
-    body: JSON.stringify({ token, step: 1, minecraft_user: user, expires_at: exp })
+    headers: { 'Content-Type':'application/json', apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}`, Prefer:'return=minimal' },
+    body: JSON.stringify({ token, step:1, minecraft_user:user, expires_at:exp })
   });
 
   if (res.ok) {
-    sessionStorage.setItem('ft_user', user);
     localStorage.setItem('ft_token1', token);
     localStorage.setItem('ft_user', user);
+    localStorage.setItem('ft_method', method);
     localStorage.setItem('ft_left_at', Date.now().toString());
-    window.location.href = LINK1;
+    window.location.href = LINKS[method];
   } else {
     alert('Error starting session. Try again.');
   }

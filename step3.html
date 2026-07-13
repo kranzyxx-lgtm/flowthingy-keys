@@ -25,7 +25,10 @@
 <script>
 const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
 const SB_KEY = "sb_publishable_dhA6MjRAMxL6pp8GSqn6Jw_N-kCi8bS";
-const LINK3  = "https://link-center.net/1365538/w87FRzlkUl0l";
+const LINK3 = {
+  linkvertise: "https://link-center.net/1365538/w87FRzlkUl0l",
+  workink:     "https://work.ink/2JPY/flowthingy-step4"
+};
 
 function randTok() { return Math.random().toString(36).substr(2,10)+Math.random().toString(36).substr(2,10); }
 
@@ -48,7 +51,8 @@ async function init() {
   el.innerHTML=`<div class="card-title ok">Step 2 done</div><div class="card-desc">Almost there. One more after this.</div><a class="btn" id="lnk">Step 3 &rarr;</a><p class="note">Last stretch!</p>`;
   document.getElementById('lnk').onclick=()=>{
     localStorage.setItem('ft_left_at', Date.now().toString());
-    window.location.href=LINK3;
+    const m=localStorage.getItem('ft_method')||'linkvertise';
+    window.location.href=LINK3[m];
   };
 }
 init();
