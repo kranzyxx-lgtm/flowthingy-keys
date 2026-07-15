@@ -42,18 +42,15 @@ async function init() {
 
   if (!token || !user) { el.innerHTML = `<p class="err">Invalid session. <a href="step1.html" style="color:var(--red)">Start over</a></p>`; return; }
 
-  // Anti-bypass: must have spent at least 8 seconds on Linkvertise
   const elapsed = (Date.now() - leftAt) / 1000;
   if (leftAt === 0 || elapsed < 8) {
     el.innerHTML = `<p class="err">Please complete the link properly — bypass detected.<br><a href="step1.html" style="color:var(--red)">Start over</a></p>`;
-    // Clear tokens so they must start fresh
     ['ft_token1','ft_token2','ft_token3','ft_token4','ft_left_at'].forEach(k=>localStorage.removeItem(k));
     return;
   }
 
   if (!token || !user) { el.innerHTML = `<p class="err">Invalid session. <a href="step1.html" style="color:var(--red)">Start over</a></p>`; return; }
 
-  // Validate token exists, is step 1, not used, not expired
   const res  = await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.1&used=eq.false&select=*`,
     { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
   const rows = await res.json();
@@ -62,14 +59,12 @@ async function init() {
     el.innerHTML = `<p class="err">Session expired or invalid. <a href="step1.html" style="color:var(--red)">Start over</a></p>`; return;
   }
 
-  // Mark token used
   await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`, {
     method: 'PATCH',
     headers: { 'Content-Type':'application/json', apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}`, Prefer:'return=minimal' },
     body: JSON.stringify({ used: true })
   });
 
-  // Create step-2 token
   const tok2 = randTok();
   const exp  = new Date(Date.now() + 30*60*1000).toISOString();
   await fetch(`${SB_URL}/rest/v1/step_tokens`, {
@@ -78,7 +73,6 @@ async function init() {
     body: JSON.stringify({ token: tok2, step: 2, minecraft_user: user, expires_at: exp })
   });
 
-  // Store next token in localStorage
   localStorage.setItem('ft_token2', tok2);
   localStorage.setItem('ft_user', user);
 

@@ -34,7 +34,6 @@ function randKey() {
   return k;
 }
 
-// Get user's public IP
 async function getIP() {
   try {
     const r = await fetch('https://api.ipify.org?format=json');
@@ -59,7 +58,6 @@ async function run() {
     return;
   }
 
-  // Validate step-4 token
   const tr = await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}&step=eq.4&used=eq.false&select=*`,
     { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
   const trows = await tr.json();
@@ -68,7 +66,6 @@ async function run() {
     return;
   }
 
-  // Mark token used
   await fetch(`${SB_URL}/rest/v1/step_tokens?token=eq.${token}`, {
     method: 'PATCH',
     headers: { 'Content-Type':'application/json', apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}`, Prefer:'return=minimal' },
@@ -76,10 +73,8 @@ async function run() {
   });
   ['ft_token1','ft_token2','ft_token3','ft_token4','ft_left_at'].forEach(k=>localStorage.removeItem(k));
 
-  // Get user's IP
   const ip = await getIP();
 
-  // Check if user already has a valid (non-expired) key
   const chk = await fetch(
     `${SB_URL}/rest/v1/licenses?minecraft_user=eq.${encodeURIComponent(user)}&activated=eq.true&select=key,expires_at,ip_address`,
     { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
@@ -108,7 +103,6 @@ async function run() {
     return;
   }
 
-  // Generate fresh key
   const key = randKey();
   const exp = new Date(now.getTime() + 24*3600*1000).toISOString();
 
