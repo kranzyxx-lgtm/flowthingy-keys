@@ -5,405 +5,347 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FlowThingy — PvP Client Mod</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --red:    #cc1111;
-    --red2:   #ff3333;
-    --bg:     #080808;
-    --bg2:    #0f0f0f;
-    --bg3:    #141414;
-    --border: #1e1e1e;
-    --text:   #eeeeee;
-    --muted:  #888888;
-  }
+:root {
+  --red:    #cc1111;
+  --red2:   #e02020;
+  --bg:     #0a0a0a;
+  --bg2:    #111111;
+  --bg3:    #181818;
+  --border: #222222;
+  --text:   #f0f0f0;
+  --muted:  #777777;
+}
 
-  html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
 
-  /* ── NAVBAR ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 40px; height: 60px;
-    background: rgba(8,8,8,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
+/* NAVBAR */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 58px;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
 
-  .nav-logo {
-    text-decoration: none; font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem; letter-spacing: 1px;
-  }
-  .nav-logo span.flow   { color: var(--red); }
-  .nav-logo span.thingy { color: #fff; }
+.logo {
+  font-size: 1.25rem; font-weight: 800;
+  text-decoration: none; letter-spacing: -0.3px;
+}
+.logo .flow   { color: #fff; }
+.logo .thingy { color: var(--red); }
 
-  .nav-links {
-    display: flex; gap: 32px; list-style: none;
-  }
-  .nav-links a {
-    color: var(--muted); text-decoration: none; font-size: 0.9rem;
-    font-weight: 500; transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
+.nav-links {
+  display: flex; gap: 28px; list-style: none;
+}
+.nav-links a {
+  color: var(--muted); text-decoration: none;
+  font-size: 0.875rem; font-weight: 500;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--text); }
 
-  .nav-right { display: flex; align-items: center; gap: 12px; }
+.btn-getkey {
+  background: var(--red); color: #fff;
+  padding: 7px 18px; border-radius: 5px;
+  font-size: 0.825rem; font-weight: 700;
+  text-decoration: none; transition: background 0.15s;
+}
+.btn-getkey:hover { background: var(--red2); }
 
-  .btn-key {
-    background: var(--red); color: #fff;
-    padding: 8px 20px; border-radius: 6px;
-    font-size: 0.85rem; font-weight: 700;
-    text-decoration: none; transition: background 0.2s;
-    white-space: nowrap;
-  }
-  .btn-key:hover { background: var(--red2); }
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 100px 24px 80px;
+}
 
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center; padding: 80px 20px 60px;
-    position: relative; overflow: hidden;
-  }
+.hero-eyebrow {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--red); margin-bottom: 20px;
+}
 
-  .hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(204,17,17,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
+.hero h1 {
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-weight: 900; line-height: 1;
+  letter-spacing: -3px; margin-bottom: 22px;
+}
+.hero h1 .flow   { color: #fff; }
+.hero h1 .thingy { color: var(--red); }
 
-  .hero-badge {
-    display: inline-block;
-    background: rgba(204,17,17,0.15);
-    border: 1px solid rgba(204,17,17,0.35);
-    color: var(--red2); font-size: 0.75rem; font-weight: 600;
-    padding: 4px 14px; border-radius: 20px; margin-bottom: 28px;
-    letter-spacing: 0.5px; text-transform: uppercase;
-  }
+.hero-desc {
+  font-size: 1.05rem; color: var(--muted);
+  max-width: 420px; line-height: 1.65;
+  margin-bottom: 38px;
+}
 
-  .hero h1 {
-    font-size: clamp(4rem, 10vw, 8rem);
-    font-family: 'Bebas Neue', sans-serif;
-    font-weight: 400; line-height: 1;
-    letter-spacing: 2px; margin-bottom: 20px;
-  }
-  .hero h1 .flow   { color: var(--red); }
-  .hero h1 .thingy { color: #fff; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
-  .hero-sub {
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    color: var(--muted); max-width: 480px;
-    line-height: 1.6; margin-bottom: 40px;
-  }
+.btn-primary {
+  background: var(--red); color: #fff;
+  padding: 11px 28px; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 700;
+  text-decoration: none; transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--red2); }
 
-  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.btn-outline {
+  background: transparent; color: var(--text);
+  padding: 11px 28px; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s;
+}
+.btn-outline:hover { border-color: #3a3a3a; }
 
-  .btn-primary {
-    background: var(--red); color: #fff;
-    padding: 13px 32px; border-radius: 8px;
-    font-size: 0.95rem; font-weight: 700;
-    text-decoration: none; transition: background 0.2s, transform 0.15s;
-  }
-  .btn-primary:hover { background: var(--red2); transform: translateY(-1px); }
+/* DIVIDER */
+.divider {
+  height: 1px; background: var(--border);
+  max-width: 1100px; margin: 0 auto;
+}
 
-  .btn-secondary {
-    background: transparent; color: var(--text);
-    padding: 13px 32px; border-radius: 8px;
-    font-size: 0.95rem; font-weight: 600;
-    text-decoration: none; border: 1px solid var(--border);
-    transition: border-color 0.2s, transform 0.15s;
-  }
-  .btn-secondary:hover { border-color: #444; transform: translateY(-1px); }
+/* STORE */
+#store {
+  padding: 90px 24px;
+  background: var(--bg);
+}
+.section-wrap { max-width: 1000px; margin: 0 auto; }
 
-  /* ── SECTION BASE ── */
-  section { padding: 100px 20px; }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
+.section-tag {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--red); margin-bottom: 10px;
+}
+.section-h {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800; letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+.section-p {
+  font-size: 0.9rem; color: var(--muted);
+  max-width: 440px; line-height: 1.7;
+  margin-bottom: 52px;
+}
 
-  .section-label {
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--red);
-    margin-bottom: 12px;
-  }
-  .section-title {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 800; letter-spacing: -1px;
-    margin-bottom: 14px;
-  }
-  .section-desc {
-    color: var(--muted); font-size: 1rem;
-    max-width: 520px; line-height: 1.7;
-    margin-bottom: 60px;
-  }
+.plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
 
-  /* ── STORE ── */
-  #store { background: var(--bg2); }
+.plan {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 24px 24px;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.plan:hover { border-color: #2e2e2e; }
+.plan.hot { border-color: var(--red); }
 
-  .plans-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
+.plan-badge {
+  position: absolute; top: -1px; right: 20px;
+  background: var(--red); color: #fff;
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 0 0 6px 6px;
+}
 
-  .plan-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px 28px;
-    display: flex; flex-direction: column;
-    transition: border-color 0.2s, transform 0.2s;
-    position: relative; overflow: hidden;
-  }
-  .plan-card:hover { border-color: #333; transform: translateY(-3px); }
+.plan-tier {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--muted); margin-bottom: 14px;
+}
+.plan-price {
+  font-size: 2.6rem; font-weight: 900;
+  letter-spacing: -2px; line-height: 1;
+  margin-bottom: 3px;
+}
+.plan-price sub {
+  font-size: 0.9rem; font-weight: 500;
+  color: var(--muted); letter-spacing: 0;
+}
+.plan-note {
+  font-size: 0.78rem; color: var(--muted);
+  margin-bottom: 22px;
+}
+.plan-line { height: 1px; background: var(--border); margin-bottom: 20px; }
 
-  .plan-card.featured {
-    border-color: var(--red);
-  }
-  .plan-card.featured::before {
-    content: 'POPULAR';
-    position: absolute; top: 16px; right: 16px;
-    background: var(--red); color: #fff;
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 1px; padding: 3px 10px;
-    border-radius: 20px;
-  }
+.plan-perks {
+  list-style: none; flex: 1;
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 28px;
+}
+.plan-perks li {
+  font-size: 0.85rem; color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.plan-perks li::before {
+  content: '✓'; color: var(--red);
+  font-weight: 700; font-size: 0.8rem;
+}
+.plan-perks li.off { opacity: 0.28; }
+.plan-perks li.off::before { content: '✕'; color: #555; }
 
-  .plan-name {
-    font-size: 0.8rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--muted); margin-bottom: 10px;
-  }
+.plan-cta {
+  display: block; text-align: center;
+  padding: 10px; border-radius: 7px;
+  font-size: 0.85rem; font-weight: 700;
+  text-decoration: none; transition: background 0.15s;
+}
+.plan-cta.active { background: var(--red); color: #fff; }
+.plan-cta.active:hover { background: var(--red2); }
+.plan-cta.soon {
+  background: var(--bg3); color: #444;
+  border: 1px solid var(--border);
+  cursor: default; pointer-events: none;
+}
 
-  .plan-price {
-    font-size: 2.8rem; font-weight: 900;
-    letter-spacing: -2px; margin-bottom: 4px;
-    line-height: 1;
-  }
-  .plan-price span { font-size: 1rem; font-weight: 500; color: var(--muted); }
+/* FEATURES */
+#features { padding: 90px 24px; background: var(--bg2); }
 
-  .plan-period {
-    font-size: 0.8rem; color: var(--muted);
-    margin-bottom: 28px;
-  }
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.feat {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 22px 20px;
+  transition: border-color 0.2s;
+}
+.feat:hover { border-color: #2a2a2a; }
+.feat-icon { font-size: 1.3rem; margin-bottom: 12px; }
+.feat-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+.feat-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
 
-  .plan-divider {
-    height: 1px; background: var(--border);
-    margin-bottom: 24px;
-  }
+/* FAQ */
+#faq { padding: 90px 24px; background: var(--bg); }
 
-  .plan-features {
-    list-style: none; flex: 1;
-    display: flex; flex-direction: column; gap: 12px;
-    margin-bottom: 32px;
-  }
-  .plan-features li {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 0.9rem; color: var(--muted);
-  }
-  .plan-features li::before {
-    content: '✓';
-    color: var(--red); font-weight: 700;
-    font-size: 0.85rem; flex-shrink: 0;
-  }
-  .plan-features li.na { opacity: 0.3; }
-  .plan-features li.na::before { content: '✕'; color: #555; }
+.faq-wrap { max-width: 660px; display: flex; flex-direction: column; gap: 10px; }
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 9px; overflow: hidden;
+}
+.faq-q {
+  padding: 16px 20px;
+  font-size: 0.9rem; font-weight: 600;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  user-select: none; gap: 12px;
+}
+.faq-q .icon { color: var(--red); font-size: 1rem; flex-shrink: 0; transition: transform 0.2s; }
+.faq-item.open .faq-q .icon { transform: rotate(45deg); }
+.faq-a {
+  display: none; padding: 0 20px 16px;
+  font-size: 0.85rem; color: var(--muted); line-height: 1.65;
+}
+.faq-item.open .faq-a { display: block; }
 
-  .plan-btn {
-    display: block; text-align: center;
-    padding: 12px; border-radius: 8px;
-    font-size: 0.9rem; font-weight: 700;
-    text-decoration: none; transition: background 0.2s;
-  }
-  .plan-btn.free {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text);
-  }
-  .plan-btn.free:hover { border-color: #444; }
-  .plan-btn.paid {
-    background: var(--red); color: #fff;
-  }
-  .plan-btn.paid:hover { background: var(--red2); }
-  .plan-btn.disabled {
-    background: #1a1a1a; color: #444;
-    cursor: not-allowed; border: 1px solid var(--border);
-    pointer-events: none;
-  }
-
-  /* ── FEATURES ── */
-  #features { background: var(--bg); }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-  }
-
-  .feature-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px 22px;
-    transition: border-color 0.2s;
-  }
-  .feature-card:hover { border-color: #2a2a2a; }
-
-  .feature-icon {
-    font-size: 1.4rem; margin-bottom: 14px;
-  }
-  .feature-title {
-    font-size: 0.95rem; font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .feature-desc {
-    font-size: 0.85rem; color: var(--muted);
-    line-height: 1.6;
-  }
-
-  /* ── FAQ ── */
-  #faq { background: var(--bg2); }
-
-  .faq-list { max-width: 700px; display: flex; flex-direction: column; gap: 12px; }
-
-  .faq-item {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px; overflow: hidden;
-  }
-  .faq-q {
-    padding: 18px 22px;
-    font-weight: 600; font-size: 0.95rem;
-    cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
-    user-select: none;
-  }
-  .faq-q::after { content: '+'; color: var(--red); font-size: 1.2rem; }
-  .faq-item.open .faq-q::after { content: '−'; }
-  .faq-a {
-    display: none;
-    padding: 0 22px 18px;
-    font-size: 0.9rem; color: var(--muted);
-    line-height: 1.7;
-  }
-  .faq-item.open .faq-a { display: block; }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 40px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 16px;
-  }
-  .footer-logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; }
-  .footer-logo .flow   { color: var(--red); }
-  .footer-logo .thingy { color: #fff; }
-  footer p { font-size: 0.8rem; color: var(--muted); }
-
-  /* ── PARTICLES ── */
-  .particles {
-    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
-  }
-  .particle {
-    position: absolute; border-radius: 50%;
-    background: rgba(204,17,17,0.15);
-    animation: float linear infinite;
-  }
-  @keyframes float {
-    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { transform: translateY(-100px) scale(1); opacity: 0; }
-  }
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-logo { font-size: 1.1rem; font-weight: 800; text-decoration: none; }
+.footer-logo .flow   { color: #fff; }
+.footer-logo .thingy { color: var(--red); }
+footer p { font-size: 0.78rem; color: var(--muted); }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
-  <a class="nav-logo" href="#"><span class="flow">Flow</span><span class="thingy">Thingy</span></a>
+  <a class="logo" href="#"><span class="flow">Flow</span><span class="thingy">Thingy</span></a>
   <ul class="nav-links">
     <li><a href="#">Home</a></li>
     <li><a href="#store">Store</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
-  <div class="nav-right">
-    <a class="btn-key" href="step1.html">Get My Key</a>
-  </div>
+  <a class="btn-getkey" href="step1.html">Get My Key</a>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="particles" id="particles"></div>
-  <div class="hero-badge">Fabric 1.21.5 · PvP Client Mod</div>
+  <div class="hero-eyebrow">Fabric 1.21.5 · PvP Client Mod</div>
   <h1><span class="flow">Flow</span><span class="thingy">Thingy</span></h1>
-  <p class="hero-sub">The most advanced PvP client mod for Minecraft. Auto attack, ESP, flight, anti-knockback and more.</p>
-  <div class="hero-btns">
+  <p class="hero-desc">The most advanced PvP client mod for Minecraft. Auto attack, ESP, flight, anti-knockback and more.</p>
+  <div class="hero-actions">
     <a class="btn-primary" href="step1.html">Get My Key — Free</a>
-    <a class="btn-secondary" href="#store">View Plans</a>
+    <a class="btn-outline" href="#store">View Plans</a>
   </div>
 </section>
 
-<!-- STORE -->
+<div class="divider"></div>
+
 <section id="store">
-  <div class="section-inner">
-    <div class="section-label">Store</div>
-    <h2 class="section-title">Choose Your Plan</h2>
-    <p class="section-desc">Start for free with our key system. Premium plans coming soon with extended features and longer access.</p>
+  <div class="section-wrap">
+    <div class="section-tag">Store</div>
+    <h2 class="section-h">Choose Your Plan</h2>
+    <p class="section-p">Start free. Premium plans with longer access and extra perks are coming soon.</p>
+    <div class="plans">
 
-    <div class="plans-grid">
-
-      <!-- Free -->
-      <div class="plan-card">
-        <div class="plan-name">Free</div>
-        <div class="plan-price">$0 <span></span></div>
-        <div class="plan-period">24-hour key · Renewable</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li>All core features</li>
+      <div class="plan">
+        <div class="plan-tier">Free</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-note">24-hour key · Renewable anytime</div>
+        <div class="plan-line"></div>
+        <ul class="plan-perks">
+          <li>All core features unlocked</li>
           <li>Auto Attack &amp; Aim Lock</li>
-          <li>ESP &amp; Visual hacks</li>
-          <li>Movement: Flight, Spider, Step</li>
+          <li>ESP, Flight, Spider, Step</li>
           <li>Anti-KB, NoFall, Timer</li>
-          <li class="na">Priority support</li>
-          <li class="na">Extended key duration</li>
+          <li class="off">Priority support</li>
+          <li class="off">Extended key duration</li>
         </ul>
-        <a class="plan-btn free" href="step1.html">Get Free Key</a>
+        <a class="plan-cta active" href="step1.html">Get Free Key</a>
       </div>
 
-      <!-- Premium (coming soon) -->
-      <div class="plan-card featured">
-        <div class="plan-name">Premium</div>
-        <div class="plan-price">— <span></span></div>
-        <div class="plan-period">Coming Soon</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
+      <div class="plan hot">
+        <div class="plan-badge">Soon</div>
+        <div class="plan-tier">Premium</div>
+        <div class="plan-price">—</div>
+        <div class="plan-note">Coming Soon</div>
+        <div class="plan-line"></div>
+        <ul class="plan-perks">
           <li>Everything in Free</li>
           <li>7-day key duration</li>
           <li>Priority support</li>
           <li>Early access to new features</li>
-          <li>No ad steps required</li>
-          <li class="na">Custom config presets</li>
+          <li>No ad steps</li>
+          <li class="off">Custom config presets</li>
         </ul>
-        <a class="plan-btn disabled" href="#">Coming Soon</a>
+        <a class="plan-cta soon" href="#">Coming Soon</a>
       </div>
 
-      <!-- Elite (coming soon) -->
-      <div class="plan-card">
-        <div class="plan-name">Elite</div>
-        <div class="plan-price">— <span></span></div>
-        <div class="plan-period">Coming Soon</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
+      <div class="plan">
+        <div class="plan-badge" style="background:#333;color:#888">Soon</div>
+        <div class="plan-tier">Elite</div>
+        <div class="plan-price">—</div>
+        <div class="plan-note">Coming Soon</div>
+        <div class="plan-line"></div>
+        <ul class="plan-perks">
           <li>Everything in Premium</li>
           <li>30-day key duration</li>
           <li>Exclusive features</li>
@@ -411,126 +353,77 @@
           <li>Direct developer support</li>
           <li>Discord role</li>
         </ul>
-        <a class="plan-btn disabled" href="#">Coming Soon</a>
+        <a class="plan-cta soon" href="#">Coming Soon</a>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
+<div class="divider"></div>
+
 <section id="features">
-  <div class="section-inner">
-    <div class="section-label">Features</div>
-    <h2 class="section-title">Everything You Need</h2>
-    <p class="section-desc">Packed with powerful features designed for competitive PvP play.</p>
-
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">⚔️</div>
-        <div class="feature-title">Auto Attack</div>
-        <div class="feature-desc">Configurable attack delay and range. Target players, mobs, or animals automatically.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <div class="feature-title">Aim Lock</div>
-        <div class="feature-desc">Smooth aim assist that locks onto targets within your configured range.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">👁️</div>
-        <div class="feature-title">ESP</div>
-        <div class="feature-desc">See players, mobs and animals through walls with customizable entity highlighting.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🕊️</div>
-        <div class="feature-title">Flight</div>
-        <div class="feature-desc">Smooth creative-style flight with adjustable speed. Works in survival mode.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🛡️</div>
-        <div class="feature-title">Anti-Knockback</div>
-        <div class="feature-desc">Reduce or eliminate knockback received from enemy hits. Fully adjustable strength.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <div class="feature-title">Timer</div>
-        <div class="feature-desc">Speed up or slow down the game tick rate for a competitive edge.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🌟</div>
-        <div class="feature-title">FullBright</div>
-        <div class="feature-desc">Maximum brightness everywhere. No more dark caves or night disadvantages.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎮</div>
-        <div class="feature-title">And More</div>
-        <div class="feature-desc">NoFall, Spider, Step, Freecam, NoSlow, AntiHunger, FastEat, NoFog and more.</div>
-      </div>
+  <div class="section-wrap">
+    <div class="section-tag">Features</div>
+    <h2 class="section-h">Everything You Need</h2>
+    <p class="section-p">Built for competitive play. Every feature is toggleable from an in-game GUI.</p>
+    <div class="feat-grid">
+      <div class="feat"><div class="feat-icon">⚔️</div><div class="feat-name">Auto Attack</div><div class="feat-desc">Configurable delay and range. Target players, mobs, or animals.</div></div>
+      <div class="feat"><div class="feat-icon">🎯</div><div class="feat-name">Aim Lock</div><div class="feat-desc">Smooth aim assist that locks onto targets within range. Hold RMB to activate.</div></div>
+      <div class="feat"><div class="feat-icon">👁️</div><div class="feat-name">ESP</div><div class="feat-desc">See entities through walls. Toggle players, mobs and animals separately.</div></div>
+      <div class="feat"><div class="feat-icon">🕊️</div><div class="feat-name">Flight</div><div class="feat-desc">Creative-style flight in survival with adjustable speed.</div></div>
+      <div class="feat"><div class="feat-icon">🛡️</div><div class="feat-name">Anti-Knockback</div><div class="feat-desc">Reduce or eliminate knockback. Set the reduction strength in the GUI.</div></div>
+      <div class="feat"><div class="feat-icon">⚡</div><div class="feat-name">Timer</div><div class="feat-desc">Adjust the game tick rate for a speed advantage.</div></div>
+      <div class="feat"><div class="feat-icon">🌟</div><div class="feat-name">FullBright</div><div class="feat-desc">Max brightness everywhere. No dark spots, ever.</div></div>
+      <div class="feat"><div class="feat-icon">🎮</div><div class="feat-name">More</div><div class="feat-desc">NoFall, Spider, Step, Freecam, NoSlow, AntiHunger, FastEat, NoFog.</div></div>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section id="faq">
-  <div class="section-inner">
-    <div class="section-label">FAQ</div>
-    <h2 class="section-title">Common Questions</h2>
-    <p class="section-desc">Everything you need to know before getting started.</p>
+<div class="divider"></div>
 
-    <div class="faq-list">
+<section id="faq">
+  <div class="section-wrap">
+    <div class="section-tag">FAQ</div>
+    <h2 class="section-h">Common Questions</h2>
+    <p class="section-p">Quick answers before you get started.</p>
+    <div class="faq-wrap">
       <div class="faq-item">
-        <div class="faq-q">How do I get a key?</div>
-        <div class="faq-a">Click "Get My Key" at the top, enter your Minecraft username and complete 4 short steps. Your key is generated instantly and is valid for 24 hours.</div>
+        <div class="faq-q">How do I get a key? <span class="icon">+</span></div>
+        <div class="faq-a">Click "Get My Key", enter your Minecraft username and complete 4 short steps. Your key is generated instantly and lasts 24 hours.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">How do I activate the mod?</div>
-        <div class="faq-a">Launch Minecraft with the mod installed. An activation screen will appear automatically. Paste your key and click Activate.</div>
+        <div class="faq-q">How do I activate the mod? <span class="icon">+</span></div>
+        <div class="faq-a">Launch Minecraft with the mod installed. An activation screen appears automatically. Paste your key and hit Activate.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">My key expired. What do I do?</div>
-        <div class="faq-a">Simply go through the key steps again to generate a new 24-hour key. It's free every time.</div>
+        <div class="faq-q">My key expired. What do I do? <span class="icon">+</span></div>
+        <div class="faq-a">Go through the steps again to get a fresh 24-hour key. It's free every time.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Does this work on all Minecraft servers?</div>
+        <div class="faq-q">Does this work on all servers? <span class="icon">+</span></div>
         <div class="faq-a">It works on most servers. Use responsibly and at your own risk.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">What Minecraft version is supported?</div>
-        <div class="faq-a">Currently supports Fabric 1.21.5. More versions may be added in the future.</div>
+        <div class="faq-q">What Minecraft version? <span class="icon">+</span></div>
+        <div class="faq-a">Fabric 1.21.5. More versions may be added later.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <a class="footer-logo" href="#"><span class="flow">Flow</span><span class="thingy">Thingy</span></a>
   <p>© 2026 FlowThingy. All rights reserved.</p>
 </footer>
 
 <script>
-// Particles
-const container = document.getElementById('particles');
-for (let i = 0; i < 18; i++) {
-  const p = document.createElement('div');
-  p.className = 'particle';
-  const size = Math.random() * 4 + 2;
-  p.style.cssText = `
-    width:${size}px; height:${size}px;
-    left:${Math.random()*100}%;
-    animation-duration:${Math.random()*15+10}s;
-    animation-delay:${Math.random()*10}s;
-  `;
-  container.appendChild(p);
-}
-
-// FAQ accordion
 document.querySelectorAll('.faq-q').forEach(q => {
   q.addEventListener('click', () => {
     const item = q.parentElement;
-    const wasOpen = item.classList.contains('open');
+    const was = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!wasOpen) item.classList.add('open');
+    if (!was) item.classList.add('open');
   });
 });
 </script>
