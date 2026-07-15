@@ -154,7 +154,19 @@ section { position: relative; z-index: 1; padding: 88px 20px; }
 .product-btn.active:hover { background: var(--red2); }
 .product-btn.disabled { background: var(--bg3); color: #3a3a3a; border: 1px solid var(--line); pointer-events: none; cursor: default; }
 
-/* --- FEATURES --- */
+/* store tabs */
+.store-tabs {
+  display: flex; gap: 6px; margin-bottom: 28px;
+}
+.store-tab {
+  background: transparent; border: 1px solid var(--line);
+  color: var(--sub); padding: 7px 18px; border-radius: 6px;
+  font-size: 0.82rem; font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer; transition: all .15s;
+}
+.store-tab:hover { border-color: #333; color: var(--text); }
+.store-tab.active { background: var(--red); border-color: var(--red); color: #fff; }
 #features { background: rgba(14,14,14,0.5); backdrop-filter: blur(4px); }
 
 .feats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: 12px; }
@@ -272,8 +284,15 @@ footer p { font-size: 0.75rem; color: var(--sub); }
     <div class="s-tag reveal">Store</div>
     <h2 class="s-h reveal">Get Your Access</h2>
     <p class="s-p reveal">Start free. Premium plans with longer access are coming soon.</p>
-    <div class="products">
 
+    <!-- Category tabs -->
+    <div class="store-tabs reveal">
+      <button class="store-tab active" onclick="switchTab('keys', this)">Key Plans</button>
+      <button class="store-tab" onclick="switchTab('mods', this)">Mods</button>
+    </div>
+
+    <!-- Key Plans -->
+    <div class="products" id="tab-keys">
       <div class="product-card reveal">
         <div class="product-img">
           <div class="product-label free">Free</div>
@@ -286,7 +305,6 @@ footer p { font-size: 0.75rem; color: var(--sub); }
           <a class="product-btn active" href="step1.html">Get Free Key</a>
         </div>
       </div>
-
       <div class="product-card reveal">
         <div class="product-img">
           <div class="product-label soon">Coming Soon</div>
@@ -299,7 +317,6 @@ footer p { font-size: 0.75rem; color: var(--sub); }
           <a class="product-btn disabled" href="#">Coming Soon</a>
         </div>
       </div>
-
       <div class="product-card reveal">
         <div class="product-img">
           <div class="product-label soon">Coming Soon</div>
@@ -312,8 +329,24 @@ footer p { font-size: 0.75rem; color: var(--sub); }
           <a class="product-btn disabled" href="#">Coming Soon</a>
         </div>
       </div>
-
     </div>
+
+    <!-- Mods -->
+    <div class="products" id="tab-mods" style="display:none">
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-label soon">Coming Soon</div>
+          <div class="product-logo"><span class="f">Flow</span><span class="t">Thingy</span></div>
+        </div>
+        <div class="product-body">
+          <div class="product-name">More Mods Coming Soon</div>
+          <div class="product-desc">New mods are in development. Check back soon for more FlowThingy releases.</div>
+          <div class="product-price">—</div>
+          <a class="product-btn disabled" href="#">Coming Soon</a>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -471,6 +504,14 @@ window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clien
 window.addEventListener('mouseleave', () => { mouseX = -999; mouseY = -999; });
 window.addEventListener('resize', () => { resize(); initDots(); });
 resize(); initDots(); tick();
+
+// --- store tabs ---
+function switchTab(tab, btn) {
+  document.getElementById('tab-keys').style.display = tab === 'keys' ? 'grid' : 'none';
+  document.getElementById('tab-mods').style.display = tab === 'mods' ? 'grid' : 'none';
+  document.querySelectorAll('.store-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
 
 // --- scroll reveal ---
 const observer = new IntersectionObserver((entries) => {
