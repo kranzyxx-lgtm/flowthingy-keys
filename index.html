@@ -146,7 +146,7 @@ section { position: relative; z-index: 1; padding: 88px 20px; }
   transition: border-color .2s;
 }
 .feat:hover { border-color: #282828; }
-.feat-i { font-size: 1.25rem; margin-bottom: 10px; }
+.feat-i { margin-bottom: 12px; display: flex; align-items: center; }
 .feat-n { font-size: 0.875rem; font-weight: 700; margin-bottom: 5px; }
 .feat-d { font-size: 0.8rem; color: var(--sub); line-height: 1.55; }
 
@@ -310,14 +310,46 @@ footer p { font-size: 0.75rem; color: var(--sub); }
     <h2 class="s-h reveal">Everything You Need</h2>
     <p class="s-p reveal">Every feature is toggleable from an in-game GUI. Press Right Shift to open.</p>
     <div class="feats">
-      <div class="feat reveal"><div class="feat-i">⚔️</div><div class="feat-n">Auto Attack</div><div class="feat-d">Configurable delay and range. Target players, mobs or animals.</div></div>
-      <div class="feat reveal"><div class="feat-i">🎯</div><div class="feat-n">Aim Lock</div><div class="feat-d">Smooth aim assist. Hold RMB to activate on nearest target.</div></div>
-      <div class="feat reveal"><div class="feat-i">👁️</div><div class="feat-n">ESP</div><div class="feat-d">See entities through walls. Toggle each type separately.</div></div>
-      <div class="feat reveal"><div class="feat-i">🕊️</div><div class="feat-n">Flight</div><div class="feat-d">Creative-style flight in survival with adjustable speed.</div></div>
-      <div class="feat reveal"><div class="feat-i">🛡️</div><div class="feat-n">Anti-Knockback</div><div class="feat-d">Reduce or cancel knockback with adjustable strength.</div></div>
-      <div class="feat reveal"><div class="feat-i">⚡</div><div class="feat-n">Timer</div><div class="feat-d">Adjust game tick rate for a speed advantage.</div></div>
-      <div class="feat reveal"><div class="feat-i">🌟</div><div class="feat-n">FullBright</div><div class="feat-d">Maximum brightness everywhere. No more dark spots.</div></div>
-      <div class="feat reveal"><div class="feat-i">🎮</div><div class="feat-n">And More</div><div class="feat-d">NoFall, Spider, Step, Freecam, NoSlow, FastEat, NoFog...</div></div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg></div>
+        <div class="feat-n">Auto Attack</div>
+        <div class="feat-d">Configurable delay and range. Target players, mobs or animals.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div>
+        <div class="feat-n">Aim Lock</div>
+        <div class="feat-d">Smooth aim assist. Hold RMB to activate on nearest target.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="feat-n">ESP</div>
+        <div class="feat-d">See entities through walls. Toggle each type separately.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="feat-n">Flight</div>
+        <div class="feat-d">Creative-style flight in survival with adjustable speed.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="feat-n">Anti-Knockback</div>
+        <div class="feat-d">Reduce or cancel knockback with adjustable strength.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="feat-n">Timer</div>
+        <div class="feat-d">Adjust game tick rate for a speed advantage.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div class="feat-n">No Fall Damage</div>
+        <div class="feat-d">Fall from any height without taking damage.</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
+        <div class="feat-n">And More</div>
+        <div class="feat-d">Spider, Step, Freecam, NoSlow, FastEat, NoFog and more.</div>
+      </div>
     </div>
   </div>
 </section>
