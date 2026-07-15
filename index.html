@@ -439,7 +439,7 @@ footer p { font-size: 0.75rem; color: var(--sub); }
 // --- moving dot grid background ---
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
-let W, H, dots = [];
+let W, H, dots = [], meteors = [];
 let mouseX = -999, mouseY = -999;
 const REPEL = 80;
 
@@ -465,8 +465,51 @@ function initDots() {
   }
 }
 
+function spawnMeteor() {
+  const len = Math.random() * 120 + 80;
+  meteors.push({
+    x: Math.random() * W * 1.5,
+    y: -20,
+    len,
+    speed: Math.random() * 6 + 4,
+    alpha: Math.random() * 0.5 + 0.3,
+    width: Math.random() * 1.5 + 0.5,
+    angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2
+  });
+}
+
 function tick() {
   ctx.clearRect(0, 0, W, H);
+
+  // Spawn meteors randomly
+  if (Math.random() < 0.025) spawnMeteor();
+
+  // Draw meteors
+  meteors.forEach((m, i) => {
+    m.x -= Math.cos(m.angle) * m.speed;
+    m.y += Math.sin(m.angle) * m.speed;
+
+    const tx = m.x + Math.cos(m.angle) * m.len;
+    const ty = m.y - Math.sin(m.angle) * m.len;
+
+    const grad = ctx.createLinearGradient(m.x, m.y, tx, ty);
+    grad.addColorStop(0, `rgba(204,17,17,${m.alpha})`);
+    grad.addColorStop(0.3, `rgba(255,80,80,${m.alpha * 0.6})`);
+    grad.addColorStop(1, `rgba(204,17,17,0)`);
+
+    ctx.beginPath();
+    ctx.moveTo(m.x, m.y);
+    ctx.lineTo(tx, ty);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = m.width;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Remove if off screen
+    if (m.y > H + 50 || m.x < -50) meteors.splice(i, 1);
+  });
+
+  // Draw dots
   dots.forEach(d => {
     const ax = d.bx + d.ox;
     const ay = d.by + d.oy;
@@ -475,20 +518,15 @@ function tick() {
     const dist = Math.sqrt(dx * dx + dy * dy);
 
     if (dist < REPEL && dist > 0) {
-      // Push away from mouse
       const force = (REPEL - dist) / REPEL;
       d.vx += (dx / dist) * force * 2.5;
       d.vy += (dy / dist) * force * 2.5;
     }
 
-    // Spring back to base position
     d.vx += -d.ox * 0.08;
     d.vy += -d.oy * 0.08;
-
-    // Dampen
     d.vx *= 0.75;
     d.vy *= 0.75;
-
     d.ox += d.vx;
     d.oy += d.vy;
 
@@ -497,6 +535,7 @@ function tick() {
     ctx.fillStyle = `rgba(255,255,255,${d.alpha})`;
     ctx.fill();
   });
+
   requestAnimationFrame(tick);
 }
 
