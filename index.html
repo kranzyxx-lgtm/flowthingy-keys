@@ -96,43 +96,63 @@ section { position: relative; z-index: 1; padding: 88px 20px; }
 /* --- STORE --- */
 #store { background: transparent; }
 
-.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 14px; }
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
 
-.plan {
+.product-card {
   border: 1px solid var(--line);
-  border-radius: 10px; padding: 26px 22px 22px;
+  border-radius: 10px;
+  overflow: hidden;
   background: rgba(14,14,14,0.7);
   backdrop-filter: blur(6px);
-  display: flex; flex-direction: column;
-  position: relative; transition: border-color .2s;
+  transition: border-color .2s, transform .2s;
 }
-.plan:hover { border-color: #2a2a2a; }
-.plan.hot { border-color: rgba(204,17,17,0.5); }
-.plan.hot:hover { border-color: var(--red); }
-
-.p-badge {
-  position: absolute; top: -1px; right: 18px;
-  font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-  padding: 3px 9px; border-radius: 0 0 6px 6px;
+.product-card:hover {
+  border-color: #2e2e2e;
+  transform: translateY(-3px);
 }
-.p-badge.red { background: var(--red); color: #fff; }
-.p-badge.dim { background: #1e1e1e; color: #444; }
 
-.p-tier { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sub); margin-bottom: 12px; }
-.p-price { font-size: 2.5rem; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 2px; }
-.p-cycle { font-size: 0.75rem; color: var(--sub); margin-bottom: 20px; }
-.p-rule { height: 1px; background: var(--line); margin-bottom: 18px; }
+.product-img {
+  width: 100%; aspect-ratio: 16/9;
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.product-img svg { opacity: 0.15; }
+.product-img .product-label {
+  position: absolute;
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  padding: 4px 10px; border-radius: 4px;
+  top: 10px; left: 10px;
+}
+.product-img .product-label.free { background: rgba(204,17,17,0.2); color: var(--red); border: 1px solid rgba(204,17,17,0.3); }
+.product-img .product-label.soon { background: rgba(255,255,255,0.05); color: #555; border: 1px solid #222; }
 
-.p-list { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
-.p-list li { font-size: 0.83rem; color: var(--sub); display: flex; align-items: center; gap: 8px; }
-.p-list li::before { content: '✓'; color: var(--red); font-weight: 700; font-size: 0.75rem; }
-.p-list li.no { opacity: .22; }
-.p-list li.no::before { content: '—'; color: #444; }
+.product-img .product-logo {
+  font-size: 1.6rem; font-weight: 900; letter-spacing: -1px;
+}
+.product-img .product-logo .f { color: var(--red); }
+.product-img .product-logo .t { color: rgba(255,255,255,0.15); }
 
-.p-btn { display: block; text-align: center; padding: 10px; border-radius: 7px; font-size: 0.83rem; font-weight: 700; text-decoration: none; }
-.p-btn.go { background: var(--red); color: #fff; transition: background .15s; }
-.p-btn.go:hover { background: var(--red2); }
-.p-btn.na { background: var(--bg3); color: #3a3a3a; border: 1px solid var(--line); pointer-events: none; }
+.product-body { padding: 16px 16px 14px; }
+.product-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.product-desc { font-size: 0.78rem; color: var(--sub); margin-bottom: 12px; line-height: 1.5; }
+.product-price { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 14px; }
+.product-price .sub { font-size: 0.75rem; font-weight: 400; color: var(--sub); }
+
+.product-btn {
+  display: block; text-align: center;
+  padding: 9px; border-radius: 7px;
+  font-size: 0.82rem; font-weight: 700;
+  text-decoration: none; transition: background .15s;
+}
+.product-btn.active { background: var(--red); color: #fff; }
+.product-btn.active:hover { background: var(--red2); }
+.product-btn.disabled { background: var(--bg3); color: #3a3a3a; border: 1px solid var(--line); pointer-events: none; cursor: default; }
 
 /* --- FEATURES --- */
 #features { background: rgba(14,14,14,0.5); backdrop-filter: blur(4px); }
@@ -250,56 +270,49 @@ footer p { font-size: 0.75rem; color: var(--sub); }
 <section id="store">
   <div class="wrap">
     <div class="s-tag reveal">Store</div>
-    <h2 class="s-h reveal">Choose Your Plan</h2>
+    <h2 class="s-h reveal">Get Your Access</h2>
     <p class="s-p reveal">Start free. Premium plans with longer access are coming soon.</p>
-    <div class="plans">
-      <div class="plan reveal">
-        <div class="p-tier">Free</div>
-        <div class="p-price">$0</div>
-        <div class="p-cycle">24-hour key · Renewable anytime</div>
-        <div class="p-rule"></div>
-        <ul class="p-list">
-          <li>All core features</li>
-          <li>Auto Attack &amp; Aim Lock</li>
-          <li>ESP, Flight, Spider, Step</li>
-          <li>Anti-KB, NoFall, Timer</li>
-          <li class="no">Priority support</li>
-          <li class="no">Extended key duration</li>
-        </ul>
-        <a class="p-btn go" href="step1.html">Get Free Key</a>
+    <div class="products">
+
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-label free">Free</div>
+          <div class="product-logo"><span class="f">Flow</span><span class="t">Thingy</span></div>
+        </div>
+        <div class="product-body">
+          <div class="product-name">FlowThingy External</div>
+          <div class="product-desc">Full access to all features. 24-hour key, renewable anytime for free.</div>
+          <div class="product-price">$0 <span class="sub">/ 24h key</span></div>
+          <a class="product-btn active" href="step1.html">Get Free Key</a>
+        </div>
       </div>
-      <div class="plan hot reveal">
-        <div class="p-badge red">Popular</div>
-        <div class="p-tier">Premium</div>
-        <div class="p-price">—</div>
-        <div class="p-cycle">Coming Soon</div>
-        <div class="p-rule"></div>
-        <ul class="p-list">
-          <li>Everything in Free</li>
-          <li>7-day key duration</li>
-          <li>Priority support</li>
-          <li>Early access features</li>
-          <li>No ad steps</li>
-          <li class="no">Custom config presets</li>
-        </ul>
-        <a class="p-btn na" href="#">Coming Soon</a>
+
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-label soon">Coming Soon</div>
+          <div class="product-logo"><span class="f">Flow</span><span class="t">Thingy</span></div>
+        </div>
+        <div class="product-body">
+          <div class="product-name">FlowThingy Premium</div>
+          <div class="product-desc">Extended 7-day access, priority support, no ad steps required.</div>
+          <div class="product-price">— <span class="sub">/ 7 days</span></div>
+          <a class="product-btn disabled" href="#">Coming Soon</a>
+        </div>
       </div>
-      <div class="plan reveal">
-        <div class="p-badge dim">Soon</div>
-        <div class="p-tier">Elite</div>
-        <div class="p-price">—</div>
-        <div class="p-cycle">Coming Soon</div>
-        <div class="p-rule"></div>
-        <ul class="p-list">
-          <li>Everything in Premium</li>
-          <li>30-day key duration</li>
-          <li>Exclusive features</li>
-          <li>Custom config presets</li>
-          <li>Developer support</li>
-          <li>Discord role</li>
-        </ul>
-        <a class="p-btn na" href="#">Coming Soon</a>
+
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-label soon">Coming Soon</div>
+          <div class="product-logo"><span class="f">Flow</span><span class="t">Thingy</span></div>
+        </div>
+        <div class="product-body">
+          <div class="product-name">FlowThingy Elite</div>
+          <div class="product-desc">30-day access, exclusive features, custom presets, developer support.</div>
+          <div class="product-price">— <span class="sub">/ 30 days</span></div>
+          <a class="product-btn disabled" href="#">Coming Soon</a>
+        </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -348,7 +361,7 @@ footer p { font-size: 0.75rem; color: var(--sub); }
       <div class="feat reveal">
         <div class="feat-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc1111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
         <div class="feat-n">And More</div>
-        <div class="feat-d">Spider, Step, Freecam, NoSlow, FastEat, NoFog and more.</div>
+        <div class="feat-d">Spider, Step, Freecam, NoSlow, NoFog and more.</div>
       </div>
     </div>
   </div>
