@@ -161,7 +161,55 @@ section { position: relative; z-index: 1; padding: 88px 20px; }
 .faq-a { display: none; padding: 0 18px 15px; font-size: 0.82rem; color: var(--sub); line-height: 1.65; }
 .faq-item.open .faq-a { display: block; }
 
-/* --- FOOTER --- */
+/* --- ANIMATIONS --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(204,17,17,0.5); }
+  50%       { box-shadow: 0 0 0 10px rgba(204,17,17,0); }
+}
+
+.hero-tag    { animation: fadeIn  .6s ease both; animation-delay: .1s; opacity: 0; }
+.hero-title  { animation: fadeUp  .7s ease both; animation-delay: .25s; opacity: 0; }
+.hero-sub    { animation: fadeUp  .7s ease both; animation-delay: .4s; opacity: 0; }
+.hero-btns   { animation: fadeUp  .7s ease both; animation-delay: .55s; opacity: 0; }
+
+.btn-r { animation: pulse 2.5s ease-in-out 1.5s infinite; }
+
+/* scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* nav link underline */
+.nav-mid a {
+  position: relative;
+}
+.nav-mid a::after {
+  content: '';
+  position: absolute; bottom: -3px; left: 0;
+  width: 0; height: 1px;
+  background: var(--red);
+  transition: width .2s ease;
+}
+.nav-mid a:hover::after { width: 100%; }
+
+/* card hover glow */
+.plan:hover  { box-shadow: 0 4px 32px rgba(0,0,0,0.4); }
+.plan.hot:hover { box-shadow: 0 4px 32px rgba(204,17,17,0.15); }
+.feat:hover  { box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
 footer {
   position: relative; z-index: 1;
   border-top: 1px solid var(--line);
@@ -201,11 +249,11 @@ footer p { font-size: 0.75rem; color: var(--sub); }
 
 <section id="store">
   <div class="wrap">
-    <div class="s-tag">Store</div>
-    <h2 class="s-h">Choose Your Plan</h2>
-    <p class="s-p">Start free. Premium plans with longer access are coming soon.</p>
+    <div class="s-tag reveal">Store</div>
+    <h2 class="s-h reveal">Choose Your Plan</h2>
+    <p class="s-p reveal">Start free. Premium plans with longer access are coming soon.</p>
     <div class="plans">
-      <div class="plan">
+      <div class="plan reveal">
         <div class="p-tier">Free</div>
         <div class="p-price">$0</div>
         <div class="p-cycle">24-hour key · Renewable anytime</div>
@@ -220,7 +268,7 @@ footer p { font-size: 0.75rem; color: var(--sub); }
         </ul>
         <a class="p-btn go" href="step1.html">Get Free Key</a>
       </div>
-      <div class="plan hot">
+      <div class="plan hot reveal">
         <div class="p-badge red">Popular</div>
         <div class="p-tier">Premium</div>
         <div class="p-price">—</div>
@@ -236,7 +284,7 @@ footer p { font-size: 0.75rem; color: var(--sub); }
         </ul>
         <a class="p-btn na" href="#">Coming Soon</a>
       </div>
-      <div class="plan">
+      <div class="plan reveal">
         <div class="p-badge dim">Soon</div>
         <div class="p-tier">Elite</div>
         <div class="p-price">—</div>
@@ -258,45 +306,45 @@ footer p { font-size: 0.75rem; color: var(--sub); }
 
 <section id="features">
   <div class="wrap">
-    <div class="s-tag">Features</div>
-    <h2 class="s-h">Everything You Need</h2>
-    <p class="s-p">Every feature is toggleable from an in-game GUI. Press Right Shift to open.</p>
+    <div class="s-tag reveal">Features</div>
+    <h2 class="s-h reveal">Everything You Need</h2>
+    <p class="s-p reveal">Every feature is toggleable from an in-game GUI. Press Right Shift to open.</p>
     <div class="feats">
-      <div class="feat"><div class="feat-i">⚔️</div><div class="feat-n">Auto Attack</div><div class="feat-d">Configurable delay and range. Target players, mobs or animals.</div></div>
-      <div class="feat"><div class="feat-i">🎯</div><div class="feat-n">Aim Lock</div><div class="feat-d">Smooth aim assist. Hold RMB to activate on nearest target.</div></div>
-      <div class="feat"><div class="feat-i">👁️</div><div class="feat-n">ESP</div><div class="feat-d">See entities through walls. Toggle each type separately.</div></div>
-      <div class="feat"><div class="feat-i">🕊️</div><div class="feat-n">Flight</div><div class="feat-d">Creative-style flight in survival with adjustable speed.</div></div>
-      <div class="feat"><div class="feat-i">🛡️</div><div class="feat-n">Anti-Knockback</div><div class="feat-d">Reduce or cancel knockback with adjustable strength.</div></div>
-      <div class="feat"><div class="feat-i">⚡</div><div class="feat-n">Timer</div><div class="feat-d">Adjust game tick rate for a speed advantage.</div></div>
-      <div class="feat"><div class="feat-i">🌟</div><div class="feat-n">FullBright</div><div class="feat-d">Maximum brightness everywhere. No more dark spots.</div></div>
-      <div class="feat"><div class="feat-i">🎮</div><div class="feat-n">And More</div><div class="feat-d">NoFall, Spider, Step, Freecam, NoSlow, FastEat, NoFog...</div></div>
+      <div class="feat reveal"><div class="feat-i">⚔️</div><div class="feat-n">Auto Attack</div><div class="feat-d">Configurable delay and range. Target players, mobs or animals.</div></div>
+      <div class="feat reveal"><div class="feat-i">🎯</div><div class="feat-n">Aim Lock</div><div class="feat-d">Smooth aim assist. Hold RMB to activate on nearest target.</div></div>
+      <div class="feat reveal"><div class="feat-i">👁️</div><div class="feat-n">ESP</div><div class="feat-d">See entities through walls. Toggle each type separately.</div></div>
+      <div class="feat reveal"><div class="feat-i">🕊️</div><div class="feat-n">Flight</div><div class="feat-d">Creative-style flight in survival with adjustable speed.</div></div>
+      <div class="feat reveal"><div class="feat-i">🛡️</div><div class="feat-n">Anti-Knockback</div><div class="feat-d">Reduce or cancel knockback with adjustable strength.</div></div>
+      <div class="feat reveal"><div class="feat-i">⚡</div><div class="feat-n">Timer</div><div class="feat-d">Adjust game tick rate for a speed advantage.</div></div>
+      <div class="feat reveal"><div class="feat-i">🌟</div><div class="feat-n">FullBright</div><div class="feat-d">Maximum brightness everywhere. No more dark spots.</div></div>
+      <div class="feat reveal"><div class="feat-i">🎮</div><div class="feat-n">And More</div><div class="feat-d">NoFall, Spider, Step, Freecam, NoSlow, FastEat, NoFog...</div></div>
     </div>
   </div>
 </section>
 
 <section id="faq">
   <div class="wrap">
-    <div class="s-tag">FAQ</div>
-    <h2 class="s-h">Common Questions</h2>
-    <p class="s-p">Quick answers before you get started.</p>
+    <div class="s-tag reveal">FAQ</div>
+    <h2 class="s-h reveal">Common Questions</h2>
+    <p class="s-p reveal">Quick answers before you get started.</p>
     <div class="faq-list">
-      <div class="faq-item">
+      <div class="faq-item reveal">
         <div class="faq-q">How do I get a key? <span class="faq-icon">+</span></div>
         <div class="faq-a">Click "Get My Key", enter your Minecraft username and complete 4 short steps. Your key is generated instantly and lasts 24 hours.</div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item reveal">
         <div class="faq-q">How do I activate the mod? <span class="faq-icon">+</span></div>
         <div class="faq-a">Launch Minecraft with the mod installed. An activation screen appears automatically. Paste your key and hit Activate.</div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item reveal">
         <div class="faq-q">My key expired, what do I do? <span class="faq-icon">+</span></div>
         <div class="faq-a">Just go through the steps again to get a fresh 24-hour key. It's always free.</div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item reveal">
         <div class="faq-q">Does this work on all servers? <span class="faq-icon">+</span></div>
         <div class="faq-a">It works on most servers. Use responsibly and at your own risk.</div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item reveal">
         <div class="faq-q">What Minecraft version is supported? <span class="faq-icon">+</span></div>
         <div class="faq-a">Currently Fabric 1.21.5. More versions may be added in the future.</div>
       </div>
@@ -378,6 +426,17 @@ window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clien
 window.addEventListener('mouseleave', () => { mouseX = -999; mouseY = -999; });
 window.addEventListener('resize', () => { resize(); initDots(); });
 resize(); initDots(); tick();
+
+// --- scroll reveal ---
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // --- FAQ ---
 document.querySelectorAll('.faq-q').forEach(q => {
