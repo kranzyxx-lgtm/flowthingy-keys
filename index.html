@@ -314,6 +314,8 @@ footer p { font-size: 0.75rem; color: var(--sub); }
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 let W, H, dots = [];
+let mouseX = -999, mouseY = -999;
+const REPEL = 80;
 
 function resize() {
   W = canvas.width  = window.innerWidth;
@@ -330,8 +332,7 @@ function initDots() {
         bx: x * 38 + 19,
         by: y * 38 + 19,
         ox: 0, oy: 0,
-        vx: (Math.random() - 0.5) * 0.18,
-        vy: (Math.random() - 0.5) * 0.18,
+        vx: 0, vy: 0,
         alpha: Math.random() * 0.25 + 0.05
       });
     }
@@ -341,18 +342,40 @@ function initDots() {
 function tick() {
   ctx.clearRect(0, 0, W, H);
   dots.forEach(d => {
+    const ax = d.bx + d.ox;
+    const ay = d.by + d.oy;
+    const dx = ax - mouseX;
+    const dy = ay - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < REPEL && dist > 0) {
+      // Push away from mouse
+      const force = (REPEL - dist) / REPEL;
+      d.vx += (dx / dist) * force * 2.5;
+      d.vy += (dy / dist) * force * 2.5;
+    }
+
+    // Spring back to base position
+    d.vx += -d.ox * 0.08;
+    d.vy += -d.oy * 0.08;
+
+    // Dampen
+    d.vx *= 0.75;
+    d.vy *= 0.75;
+
     d.ox += d.vx;
     d.oy += d.vy;
-    if (Math.abs(d.ox) > 6) d.vx *= -1;
-    if (Math.abs(d.oy) > 6) d.vy *= -1;
+
     ctx.beginPath();
-    ctx.arc(d.bx + d.ox, d.by + d.oy, 1, 0, Math.PI * 2);
+    ctx.arc(d.bx + d.ox, d.by + d.oy, 1.2, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${d.alpha})`;
     ctx.fill();
   });
   requestAnimationFrame(tick);
 }
 
+window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+window.addEventListener('mouseleave', () => { mouseX = -999; mouseY = -999; });
 window.addEventListener('resize', () => { resize(); initDots(); });
 resize(); initDots(); tick();
 
