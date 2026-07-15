@@ -51,10 +51,10 @@ body::before {
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: var(--text);
+  color: var(--red);
 }
 .brand-name em {
-  color: var(--red);
+  color: var(--text);
   font-style: normal;
 }
 .brand-tag {
