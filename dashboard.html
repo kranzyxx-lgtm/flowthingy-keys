@@ -3,161 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FlowThingy Bot — Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>FlowThingy Bot Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --red:#cc1111;--red2:#e52222;--bg:#080808;--bg2:#0e0e0e;--bg3:#151515;--line:#1f1f1f;--text:#efefef;--sub:#6b6b6b;--green:#3dba72; }
-body { font-family:'Space Grotesk',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#cc1111;--red2:#e52222;--bg:#080808;--bg2:#0e0e0e;--bg3:#151515;--line:#1f1f1f;--text:#efefef;--sub:#6b6b6b;--green:#3dba72;--yellow:#e8a030}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-nav {
-  height:56px; padding:0 32px;
-  display:flex; align-items:center; justify-content:space-between;
-  background:var(--bg2); border-bottom:1px solid var(--line);
-}
-.logo { font-size:1.1rem; font-weight:800; text-decoration:none; }
-.logo .f { color:var(--red); } .logo .t { color:#fff; }
-.nav-back { color:var(--sub); text-decoration:none; font-size:0.85rem; font-weight:500; }
-.nav-back:hover { color:var(--text); }
+/* NAV */
+nav{height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
+.logo{font-size:1.1rem;font-weight:800;text-decoration:none}.logo .f{color:var(--red)}.logo .t{color:#fff}
+.nav-back{color:var(--sub);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color .15s}.nav-back:hover{color:var(--text)}
 
-.login-wrap {
-  min-height: calc(100vh - 56px);
-  display:flex; align-items:center; justify-content:center; padding:20px;
-}
-.login-card {
-  background:var(--bg2); border:1px solid var(--line); border-radius:12px;
-  padding:36px 32px; max-width:380px; width:100%;
-}
-.login-card h2 { font-size:1.3rem; font-weight:800; margin-bottom:6px; }
-.login-card p { font-size:0.85rem; color:var(--sub); margin-bottom:24px; }
-input {
-  width:100%; padding:10px 14px; background:var(--bg3); border:1px solid var(--line);
-  border-radius:7px; color:var(--text); font-size:0.9rem;
-  font-family:'Space Grotesk',sans-serif; outline:none; margin-bottom:14px; transition:border-color .15s;
-}
-input:focus { border-color:var(--red); }
-.btn { width:100%; padding:11px; background:var(--red); color:#fff; border:none; border-radius:7px; font-size:0.9rem; font-weight:700; font-family:'Space Grotesk',sans-serif; cursor:pointer; }
-.btn:hover { background:var(--red2); }
-.err { color:#ff5555; font-size:0.8rem; margin-bottom:10px; display:none; }
+/* LOGIN */
+.login-wrap{min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:36px 32px;max-width:380px;width:100%;animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-card h2{font-size:1.3rem;font-weight:800;margin-bottom:4px}
+.login-card p{font-size:0.85rem;color:var(--sub);margin-bottom:24px}
+.inp{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--line);border-radius:7px;color:var(--text);font-size:0.9rem;font-family:'Space Grotesk',sans-serif;outline:none;margin-bottom:14px;transition:border-color .15s}
+.inp:focus{border-color:var(--red)}
+.inp::placeholder{color:#333}
+.btn-main{width:100%;padding:11px;background:var(--red);color:#fff;border:none;border-radius:7px;font-size:0.9rem;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:background .15s}
+.btn-main:hover{background:var(--red2)}
+.err{color:#ff5555;font-size:0.8rem;margin-bottom:10px;display:none}
 
-.dash-wrap { max-width:900px; margin:0 auto; padding:32px 20px; display:none; }
-.dash-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
-.bot-name { font-size:1.5rem; font-weight:800; }
-.status-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:20px; font-size:0.78rem; font-weight:700; }
-.status-badge.online  { background:rgba(61,186,114,0.15); color:var(--green); border:1px solid rgba(61,186,114,0.3); }
-.status-badge.offline { background:rgba(204,17,17,0.15); color:#ff5555; border:1px solid rgba(204,17,17,0.3); }
-.status-badge.pending { background:rgba(255,170,0,0.15); color:#ffaa00; border:1px solid rgba(255,170,0,0.3); }
-.status-dot { width:7px; height:7px; border-radius:50%; }
-.online .status-dot  { background:var(--green); animation:pulse-g 1.5s infinite; }
-.offline .status-dot { background:#ff5555; }
-.pending .status-dot { background:#ffaa00; animation:pulse-o 1.5s infinite; }
-@keyframes pulse-g { 0%,100%{box-shadow:0 0 0 0 rgba(61,186,114,.5)} 50%{box-shadow:0 0 0 5px rgba(61,186,114,0)} }
-@keyframes pulse-o { 0%,100%{box-shadow:0 0 0 0 rgba(255,170,0,.5)} 50%{box-shadow:0 0 0 5px rgba(255,170,0,0)} }
+/* DASH LAYOUT */
+.dash{display:none;max-width:1000px;margin:0 auto;padding:28px 20px}
 
-.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-.card { background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:22px 20px; }
-.card-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--sub); margin-bottom:8px; }
-.card-value { font-size:1.1rem; font-weight:700; font-family:'JetBrains Mono',monospace; }
-
-.controls { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
-.ctrl-btn { padding:9px 22px; border-radius:6px; font-size:0.85rem; font-weight:700; font-family:'Space Grotesk',sans-serif; cursor:pointer; border:none; transition:background .15s; }
-.ctrl-btn.start  { background:var(--green); color:#000; }
-.ctrl-btn.stop   { background:#cc2222; color:#fff; }
-.ctrl-btn.restart{ background:#333; color:#fff; border:1px solid var(--line); }
-.ctrl-btn:disabled { opacity:.4; cursor:default; }
-
-.log-box {
-  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
-  padding:16px; height:200px; overflow-y:auto;
-  font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.6; color:#aaa;
-}
-.log-line.info  { color:#aaa; }
-.log-line.ok    { color:var(--green); }
-.log-line.err   { color:#ff5555; }
-.log-line.warn  { color:#ffaa00; }
-
-.config-section { margin-top:24px; }
-.config-section h3 { font-size:1rem; font-weight:700; margin-bottom:16px; }
-.config-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-label { display:block; font-size:0.75rem; font-weight:600; color:var(--sub); margin-bottom:5px; letter-spacing:.5px; text-transform:uppercase; }
-select { width:100%; padding:10px 14px; background:var(--bg3); border:1px solid var(--line); border-radius:7px; color:var(--text); font-size:0.875rem; font-family:'Space Grotesk',sans-serif; outline:none; }
-select:focus { border-color:var(--red); }
-select option { background:var(--bg3); }
-.save-btn { margin-top:16px; padding:10px 24px; background:var(--red); color:#fff; border:none; border-radius:6px; font-size:0.875rem; font-weight:700; font-family:'Space Grotesk',sans-serif; cursor:pointer; }
-.save-btn:hover { background:var(--red2); }
-
-@media(max-width:600px){ .grid-2,.config-grid{grid-template-columns:1fr;} }
+/* BOT HEADER */
+.bot-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;animation:fadeUp .4s ease}
+.bot-title{font-size:1.8rem;font-weight:900;letter-spacing:-1px}
+.bot-title .f{color:var(--red)}.bot-title .t{color:#fff}
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:999px;font-size:0.78rem;font-weight:700;letter-spacing:.5px}
+.status-pill.online{background:rgba(61,186,114,.12);color:var(--green);border:1px solid rgba(61,186,114,.25)}
+.status-pill.offline{background:rgba(204,17,17,.12);color:#ff5555;border:1px solid rgba(204,17,17,.25)}
+.status-pill.pending{background:rgba(232,160,48,.12);color:var(--yellow);border:1px solid rgba(232,160,48,.25)}
+.dot{width:8px;height:8px;border-radius:50%}
+.online .dot{background:var(--green);animation:pulse-g 1.5s infinite}
+.offline .dot{background:#ff5555}
+.pending .dot{background:var(--yellow);animation:pulse-y 1.5s infinite}
+@keyframes pulse-g{0%,100%{box-shadow:0 0 0 0 rgba(61,186,114,.4)}50%{box-shadow:0 0 0 6px rgba(61,186,114,0)}}
+@keyframes pulse-y{0%,100%{box-shadow:0 0 0 0 rgba(232,160,48,.4)}50%{box-shadow:0 0 0 6px rgba(232,160,48,0)}}
 </style>
+
+<style>
+/* CARDS GRID */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:20px 18px;animation:fadeUp .5s ease;transition:border-color .2s}
+.card:hover{border-color:#2a2a2a}
+.card-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--sub);margin-bottom:8px}
+.card-value{font-size:1.2rem;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-0.5px}
+.card-value.green{color:var(--green)}.card-value.red{color:#ff5555}.card-value.yellow{color:var(--yellow)}
+
+/* CONTROL BUTTONS */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;animation:fadeUp .5s ease}
+.ctrl{padding:9px 22px;border-radius:6px;font-size:0.85rem;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;border:none;transition:all .15s}
+.ctrl.start{background:var(--green);color:#000}.ctrl.start:hover{filter:brightness(1.15)}
+.ctrl.stop{background:#cc2222;color:#fff}.ctrl.stop:hover{background:#e03333}
+.ctrl.restart{background:var(--bg3);color:var(--text);border:1px solid var(--line)}.ctrl.restart:hover{border-color:#444}
+.ctrl:disabled{opacity:.35;cursor:default;pointer-events:none}
+
+/* LOG */
+.log-box{background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:14px;height:180px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:0.77rem;line-height:1.65;color:var(--sub);margin-bottom:14px}
+.log-box::-webkit-scrollbar{width:4px}.log-box::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+.ll-ok{color:var(--green)}.ll-err{color:#ff5555}.ll-warn{color:var(--yellow)}.ll-info{color:var(--sub)}
+
+/* CONFIG SECTION */
+.section-title{font-size:1rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--line)}
+label{display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);margin-bottom:5px}
+select{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--line);border-radius:7px;color:var(--text);font-size:0.875rem;font-family:'Space Grotesk',sans-serif;outline:none;transition:border-color .15s}
+select:focus,select:hover{border-color:var(--red)}
+select option{background:var(--bg3)}
+.save-btn{padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:0.875rem;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:background .15s;margin-top:14px}
+.save-btn:hover{background:var(--red2)}
+.success-msg{color:var(--green);font-size:0.8rem;margin-top:8px;display:none;animation:fadeUp .3s ease}
+
+/* SKIN SECTION */
+.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-bottom:14px}
+.skin-item{background:var(--bg3);border:2px solid var(--line);border-radius:8px;padding:8px;text-align:center;cursor:pointer;transition:border-color .15s}
+.skin-item:hover{border-color:var(--red)}
+.skin-item.selected{border-color:var(--red);background:rgba(204,17,17,.08)}
+.skin-item img{width:48px;height:48px;image-rendering:pixelated;display:block;margin:0 auto 6px}
+.skin-item span{font-size:0.7rem;color:var(--sub)}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:4px}
+.tab{flex:1;padding:8px;text-align:center;font-size:0.82rem;font-weight:600;cursor:pointer;border-radius:6px;transition:all .15s;color:var(--sub)}
+.tab.active{background:var(--red);color:#fff}
+.tab-panel{display:none}.tab-panel.active{display:block;animation:fadeUp .3s ease}
+
+@media(max-width:600px){.grid-3,.grid-2{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
-
 <nav>
   <a class="logo" href="index.html"><span class="f">Flow</span><span class="t">Thingy</span></a>
-  <a class="nav-back" href="index.html">← Back to site</a>
+  <a class="nav-back" href="index.html">Back to site</a>
 </nav>
 
-<!-- Login -->
+<!-- LOGIN -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-card">
     <h2>Bot Dashboard</h2>
-    <p>Enter your owner password to access your bot controls.</p>
-    <div class="err" id="loginErr">Wrong password. Try again.</div>
-    <input type="password" id="passInput" placeholder="Owner password" onkeydown="if(event.key==='Enter')login()">
-    <button class="btn" onclick="login()">Access Dashboard</button>
+    <p>Enter your owner password to access your bot.</p>
+    <div class="err" id="loginErr"></div>
+    <input class="inp" type="password" id="passInput" placeholder="Owner password" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-main" onclick="login()">Access Dashboard</button>
   </div>
 </div>
 
-<!-- Dashboard -->
-<div class="dash-wrap" id="dashWrap">
-  <div class="dash-header">
+<!-- DASHBOARD -->
+<div class="dash" id="dashWrap">
+  <div class="bot-header">
     <div>
-      <div class="card-label" style="margin-bottom:4px">Bot Name</div>
-      <div class="bot-name" id="dashBotName">—</div>
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:6px">Bot Dashboard</div>
+      <div class="bot-title"><span class="f">Flow</span><span class="t">Thingy</span> <span id="dashBotNameTitle" style="color:var(--sub);font-weight:500;font-size:1.1rem"></span></div>
     </div>
-    <span class="status-badge pending" id="statusBadge">
-      <span class="status-dot"></span>
-      <span id="statusText">Pending</span>
-    </span>
+    <span class="status-pill pending" id="statusBadge"><span class="dot"></span><span id="statusText">Pending</span></span>
   </div>
 
+  <!-- Stats row -->
+  <div class="grid-3" id="statsRow">
+    <div class="card"><div class="card-label">Server</div><div class="card-value" id="statServer" style="font-size:.85rem">—</div></div>
+    <div class="card"><div class="card-label">Uptime</div><div class="card-value green" id="statUptime">00:00:00</div></div>
+    <div class="card"><div class="card-label">Behavior</div><div class="card-value" id="statBehavior">—</div></div>
+  </div>
+
+  <!-- Controls -->
   <div class="controls">
-    <button class="ctrl-btn start"   id="btnStart"   onclick="controlBot('start')">▶ Start</button>
-    <button class="ctrl-btn stop"    id="btnStop"    onclick="controlBot('stop')">■ Stop</button>
-    <button class="ctrl-btn restart" id="btnRestart" onclick="controlBot('restart')">↺ Restart</button>
+    <button class="ctrl start"   onclick="controlBot('start')">Start</button>
+    <button class="ctrl stop"    onclick="controlBot('stop')">Stop</button>
+    <button class="ctrl restart" onclick="controlBot('restart')">Restart</button>
   </div>
 
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-label">Server</div>
-      <div class="card-value" id="dashServer">—</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Version</div>
-      <div class="card-value" id="dashVersion">—</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Spawn Coords</div>
-      <div class="card-value" id="dashSpawn">—</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Behavior</div>
-      <div class="card-value" id="dashBehavior">—</div>
-    </div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('logs',this)">Live Log</div>
+    <div class="tab" onclick="switchTab('config',this)">Configure</div>
+    <div class="tab" onclick="switchTab('skin',this)">Bot Skin</div>
+    <div class="tab" onclick="switchTab('info',this)">Info</div>
   </div>
 
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-label" style="margin-bottom:10px">Bot Log</div>
-    <div class="log-box" id="logBox">
-      <div class="log-line info">Waiting for bot to connect...</div>
-    </div>
+  <!-- Log tab -->
+  <div class="tab-panel active" id="tab-logs">
+    <div class="card-label" style="margin-bottom:8px">Bot Activity</div>
+    <div class="log-box" id="logBox"><div class="ll-info">Waiting for bot activity...</div></div>
   </div>
 
-  <div class="config-section card">
-    <h3>Reconfigure Bot</h3>
-    <div class="config-grid">
-      <div>
-        <label>Behavior</label>
+  <!-- Config tab -->
+  <div class="tab-panel" id="tab-config">
+    <div class="section-title">Bot Settings</div>
+    <div class="grid-2">
+      <div><label>Bot Name</label><input class="inp" type="text" id="cfgBotName" maxlength="16" placeholder="FlowBot"></div>
+      <div><label>Behavior</label>
         <select id="cfgBehavior">
           <option value="wander">Wander randomly</option>
           <option value="jump">Jump randomly</option>
@@ -165,151 +168,251 @@ select option { background:var(--bg3); }
           <option value="idle">Stay idle</option>
         </select>
       </div>
-      <div>
-        <label>Spawn X</label>
-        <input type="number" id="cfgSpawnX" placeholder="0">
-      </div>
-      <div>
-        <label>Spawn Z</label>
-        <input type="number" id="cfgSpawnZ" placeholder="0">
-      </div>
-      <div>
-        <label>Bot Name</label>
-        <input type="text" id="cfgBotName" placeholder="BotName" maxlength="16">
+      <div><label>Spawn X</label><input class="inp" type="number" id="cfgSpawnX" placeholder="0"></div>
+      <div><label>Spawn Z</label><input class="inp" type="number" id="cfgSpawnZ" placeholder="0"></div>
+    </div>
+    <div class="section-title" style="margin-top:18px">Server Settings</div>
+    <div class="grid-2">
+      <div><label>Server IP</label><input class="inp" type="text" id="cfgServerIp" placeholder="play.example.net"></div>
+      <div><label>Port</label><input class="inp" type="number" id="cfgPort" placeholder="25565"></div>
+      <div><label>Minecraft Version</label>
+        <select id="cfgVersion">
+          <option value="1.21.5">1.21.5</option>
+          <option value="1.21.4">1.21.4</option>
+          <option value="1.21.1">1.21.1</option>
+          <option value="1.20.4">1.20.4</option>
+          <option value="1.20.1">1.20.1</option>
+          <option value="1.19.4">1.19.4</option>
+          <option value="1.18.2">1.18.2</option>
+          <option value="1.16.5">1.16.5</option>
+          <option value="1.8.9">1.8.9</option>
+        </select>
       </div>
     </div>
-    <button class="save-btn" onclick="saveConfig()">Save Changes</button>
+    <button class="save-btn" onclick="saveConfig()">Save and Restart Bot</button>
+    <div class="success-msg" id="saveMsg">Settings saved! Bot is restarting...</div>
+  </div>
+
+  <!-- Skin tab -->
+  <div class="tab-panel" id="tab-skin">
+    <div class="section-title">Bot Skin</div>
+    <p style="font-size:.85rem;color:var(--sub);margin-bottom:16px">Choose a skin for your bot. The bot will use this username when connecting.</p>
+    <div class="skin-grid" id="skinGrid"></div>
+    <div style="margin-top:16px">
+      <label>Custom Username (changes bot name + skin)</label>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <input class="inp" type="text" id="customSkin" placeholder="Enter any Minecraft username" style="margin:0;flex:1">
+        <button class="save-btn" style="margin:0;white-space:nowrap" onclick="applySkin()">Apply Skin</button>
+      </div>
+      <p style="font-size:.75rem;color:var(--sub);margin-top:8px">The bot will join with this username and use that player's skin.</p>
+    </div>
+    <div class="success-msg" id="skinMsg">Skin applied! Bot will restart with new username.</div>
+  </div>
+
+  <!-- Info tab -->
+  <div class="tab-panel" id="tab-info">
+    <div class="section-title">Bot Information</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-label">Bot Name</div><div class="card-value" id="infoName">—</div></div>
+      <div class="card"><div class="card-label">Server</div><div class="card-value" style="font-size:.85rem" id="infoServer">—</div></div>
+      <div class="card"><div class="card-label">Spawn Point</div><div class="card-value" id="infoSpawn">—</div></div>
+      <div class="card"><div class="card-label">MC Version</div><div class="card-value" id="infoVersion">—</div></div>
+      <div class="card"><div class="card-label">Bot ID</div><div class="card-value" style="font-size:.72rem;letter-spacing:0" id="infoDashId">—</div></div>
+      <div class="card"><div class="card-label">Created</div><div class="card-value" style="font-size:.8rem" id="infoCreated">—</div></div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="section-title">Download Config</div>
+      <p style="font-size:.85rem;color:var(--sub);margin-bottom:12px">Re-download your config.json if you need to reinstall the bot exe.</p>
+      <button class="save-btn" onclick="downloadConfig()">Download config.json</button>
+    </div>
   </div>
 </div>
 
 <script>
-const SB_URL = "https://azezkzvjpgcvrubbwuep.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZXprenZqcGdjdnJ1YmJ3dWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NTM0OTQsImV4cCI6MjA5OTQyOTQ5NH0.ZZMvTSubWXui--aiHx1LVtRDHYEKTQGc5sY8RgVLKVQ";
+const SB_URL="https://azezkzvjpgcvrubbwuep.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZXprenZqcGdjdnJ1YmJ3dWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NTM0OTQsImV4cCI6MjA5OTQyOTQ5NH0.ZZMvTSubWXui--aiHx1LVtRDHYEKTQGc5sY8RgVLKVQ";
+const params=new URLSearchParams(window.location.search);
+const dashId=params.get('id');
+let botData=null, uptimeInterval=null, uptimeSec=0;
 
-const params = new URLSearchParams(window.location.search);
-const dashId = params.get('id');
-let botData = null;
+const SKINS=[
+  {name:'Steve',url:'https://crafatar.com/avatars/8667ba71b85a4004af54457a9734eed7?size=64&overlay'},
+  {name:'Alex',url:'https://crafatar.com/avatars/ec561538f3fd461daff5086b22154bce?size=64&overlay'},
+  {name:'Notch',url:'https://crafatar.com/avatars/069a79f444e94726a5befca90e38aaf5?size=64&overlay'},
+  {name:'Dream',url:'https://crafatar.com/avatars/a8f8b6e7a0894b7abeeef0e7e5c1a8e3?size=64&overlay'},
+  {name:'Herobrine',url:'https://crafatar.com/avatars/f84c6a790a4e45e0879bcd49ebd4c4e2?size=64&overlay'},
+];
 
-if (!dashId) {
-  document.getElementById('loginWrap').innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--sub)">No bot ID in URL. <a href="index.html" style="color:var(--red)">Create a bot first</a>.</div>';
-}
+if(!dashId){document.getElementById('loginWrap').innerHTML='<div style="text-align:center;padding:60px;color:var(--sub)">No bot ID. <a href="bot.html" style="color:var(--red)">Create a bot</a>.</div>';}
 
-async function login() {
-  const pass = document.getElementById('passInput').value;
-  if (!pass) return;
-  const res = await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}&select=*`,
-    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }});
-  const rows = await res.json();
-  if (!rows || rows.length === 0) { showLoginErr('Bot not found.'); return; }
-  const bot = rows[0];
-  if (bot.owner_pass !== btoa(pass)) { showLoginErr('Wrong password. Try again.'); return; }
-  botData = bot;
-  document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById('dashWrap').style.display = 'block';
+async function login(){
+  const pass=document.getElementById('passInput').value;
+  if(!pass)return;
+  const res=await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}&select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const rows=await res.json();
+  if(!rows||rows.length===0){showErr('Bot not found.');return;}
+  const bot=rows[0];
+  if(bot.owner_pass!==btoa(pass)){showErr('Wrong password.');return;}
+  botData=bot;
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('dashWrap').style.display='block';
   loadDash();
-  setInterval(refreshStatus, 5000);
+  setInterval(refreshStatus,4000);
+  startUptimeCounter();
+}
+function showErr(m){const e=document.getElementById('loginErr');e.textContent=m;e.style.display='block';}
+
+function loadDash(){
+  document.getElementById('dashBotNameTitle').textContent=botData.bot_name;
+  document.getElementById('statServer').textContent=`${botData.server_ip}:${botData.server_port}`;
+  document.getElementById('statBehavior').textContent=botData.behavior;
+  document.getElementById('cfgBotName').value=botData.bot_name;
+  document.getElementById('cfgBehavior').value=botData.behavior;
+  document.getElementById('cfgSpawnX').value=botData.spawn_x;
+  document.getElementById('cfgSpawnZ').value=botData.spawn_z;
+  document.getElementById('cfgServerIp').value=botData.server_ip;
+  document.getElementById('cfgPort').value=botData.server_port;
+  document.getElementById('cfgVersion').value=botData.mc_version;
+  document.getElementById('infoName').textContent=botData.bot_name;
+  document.getElementById('infoServer').textContent=`${botData.server_ip}:${botData.server_port}`;
+  document.getElementById('infoSpawn').textContent=`X:${botData.spawn_x}  Z:${botData.spawn_z}`;
+  document.getElementById('infoVersion').textContent=botData.mc_version;
+  document.getElementById('infoDashId').textContent=botData.dash_id;
+  document.getElementById('infoCreated').textContent=new Date(botData.created_at).toLocaleDateString();
+  updateStatus(botData.status);
+  buildSkins();
+  addLog('Dashboard loaded for '+botData.bot_name,'info');
 }
 
-function showLoginErr(msg) {
-  const e = document.getElementById('loginErr');
-  e.textContent = msg; e.style.display = 'block';
-}
-
-function loadDash() {
-  document.getElementById('dashBotName').textContent = botData.bot_name;
-  document.getElementById('dashServer').textContent = `${botData.server_ip}:${botData.server_port}`;
-  document.getElementById('dashVersion').textContent = botData.mc_version;
-  document.getElementById('dashSpawn').textContent = `X:${botData.spawn_x} Z:${botData.spawn_z}`;
-  document.getElementById('dashBehavior').textContent = botData.behavior;
-  document.getElementById('cfgBehavior').value = botData.behavior;
-  document.getElementById('cfgSpawnX').value = botData.spawn_x;
-  document.getElementById('cfgSpawnZ').value = botData.spawn_z;
-  document.getElementById('cfgBotName').value = botData.bot_name;
-  updateStatusBadge(botData.status);
-  addLog(`Loaded bot: ${botData.bot_name} on ${botData.server_ip}`, 'info');
-}
-
-async function refreshStatus() {
-  const res = await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}&select=status,log`,
-    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }});
-  const rows = await res.json();
-  if (!rows || rows.length === 0) return;
-  updateStatusBadge(rows[0].status);
-  if (rows[0].log) updateLog(rows[0].log);
-}
-
-function updateStatusBadge(status) {
-  const badge = document.getElementById('statusBadge');
-  const text  = document.getElementById('statusText');
-  badge.className = `status-badge ${status}`;
-  text.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-}
-
-function addLog(msg, type='info') {
-  const box = document.getElementById('logBox');
-  const line = document.createElement('div');
-  line.className = `log-line ${type}`;
-  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-  box.appendChild(line);
-  box.scrollTop = box.scrollHeight;
-}
-
-function updateLog(logText) {
-  const box = document.getElementById('logBox');
-  box.innerHTML = '';
-  logText.split('\n').filter(Boolean).forEach(line => {
-    const div = document.createElement('div');
-    div.className = 'log-line info';
-    div.textContent = line;
-    box.appendChild(div);
+function buildSkins(){
+  const grid=document.getElementById('skinGrid');
+  grid.innerHTML='';
+  SKINS.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='skin-item'+(botData.bot_name===s.name?' selected':'');
+    d.innerHTML=`<img src="${s.url}" onerror="this.src='https://crafatar.com/avatars/8667ba71b85a4004af54457a9734eed7?size=64&overlay'"><span>${s.name}</span>`;
+    d.onclick=()=>{document.getElementById('customSkin').value=s.name;document.querySelectorAll('.skin-item').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');};
+    grid.appendChild(d);
   });
-  box.scrollTop = box.scrollHeight;
 }
 
-async function controlBot(action) {
-  addLog(`Sending command: ${action}...`, 'warn');
-  await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type':'application/json', apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, Prefer:'return=minimal' },
-    body: JSON.stringify({ command: action, status: action === 'stop' ? 'offline' : 'pending' })
-  });
-  addLog(`Command sent: ${action}`, 'ok');
-  updateStatusBadge(action === 'stop' ? 'offline' : 'pending');
+async function refreshStatus(){
+  const res=await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}&select=status,log`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const rows=await res.json();
+  if(!rows||rows.length===0)return;
+  updateStatus(rows[0].status);
+  if(rows[0].log)updateLog(rows[0].log);
 }
 
-async function saveConfig() {
-  const BAD_WORDS = ['nigger','nigga','fuck','shit','bitch','cunt','faggot','retard'];
-  const newName = document.getElementById('cfgBotName').value.trim();
-  if (BAD_WORDS.some(w => newName.toLowerCase().includes(w))) { alert('Bot name contains inappropriate words.'); return; }
+function updateStatus(s){
+  const b=document.getElementById('statusBadge'),t=document.getElementById('statusText');
+  b.className='status-pill '+s;
+  t.textContent=s.charAt(0).toUpperCase()+s.slice(1);
+}
 
-  const spawnX = document.getElementById('cfgSpawnX').value;
-  const spawnZ = document.getElementById('cfgSpawnZ').value;
-  const parsedX = spawnX === '' ? botData.spawn_x : parseInt(spawnX);
-  const parsedZ = spawnZ === '' ? botData.spawn_z : parseInt(spawnZ);
-
-  await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type':'application/json', apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, Prefer:'return=minimal' },
-    body: JSON.stringify({
-      behavior: document.getElementById('cfgBehavior').value,
-      spawn_x:  parsedX,
-      spawn_z:  parsedZ,
-      bot_name: newName,
-      command: 'restart'
-    })
-  });
-
-  // Update local botData and display
-  botData.spawn_x = parsedX;
-  botData.spawn_z = parsedZ;
-  botData.bot_name = newName;
-  botData.behavior = document.getElementById('cfgBehavior').value;
-
-  document.getElementById('dashBotName').textContent = newName;
-  document.getElementById('dashSpawn').textContent = `X:${parsedX} Z:${parsedZ}`;
-  document.getElementById('dashBehavior').textContent = botData.behavior;
-  addLog(`Config saved — Bot: ${newName}, Spawn: X:${parsedX} Z:${parsedZ}, Behavior: ${botData.behavior}`, 'ok');
+function startUptimeCounter(){
+  if(uptimeInterval)clearInterval(uptimeInterval);
+  uptimeSec=0;
+  uptimeInterval=setInterval(()=>{
+    if(botData&&document.getElementById('statusText').textContent==='Online'){
+      uptimeSec++;
+      const h=Math.floor(uptimeSec/3600),m=Math.floor((uptimeSec%3600)/60),s=uptimeSec%60;
+      document.getElementById('statUptime').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+  },1000);
 }
 </script>
-</body>
-</html>
+
+<script>
+function addLog(msg,type='info'){
+  const box=document.getElementById('logBox');
+  const d=document.createElement('div');
+  d.className='ll-'+type;
+  d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+}
+function updateLog(txt){
+  const box=document.getElementById('logBox');
+  box.innerHTML='';
+  txt.split('\n').filter(Boolean).slice(-50).forEach(l=>{
+    const d=document.createElement('div');
+    d.className='ll-info'; d.textContent=l; box.appendChild(d);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+async function controlBot(action){
+  addLog(`Sending ${action} command...`,'warn');
+  await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}`,{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},
+    body:JSON.stringify({command:action,status:action==='stop'?'offline':'pending'})
+  });
+  updateStatus(action==='stop'?'offline':'pending');
+  addLog(`Command sent: ${action}`,'ok');
+}
+async function saveConfig(){
+  const BAD=['nigger','nigga','fuck','shit','bitch','cunt','faggot','retard'];
+  const name=document.getElementById('cfgBotName').value.trim();
+  if(BAD.some(w=>name.toLowerCase().includes(w))){alert('Bot name contains inappropriate words.');return;}
+  const sx=document.getElementById('cfgSpawnX').value;
+  const sz=document.getElementById('cfgSpawnZ').value;
+  const parsedX=sx===''?botData.spawn_x:parseInt(sx);
+  const parsedZ=sz===''?botData.spawn_z:parseInt(sz);
+  await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}`,{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},
+    body:JSON.stringify({
+      bot_name:name,
+      behavior:document.getElementById('cfgBehavior').value,
+      spawn_x:parsedX, spawn_z:parsedZ,
+      server_ip:document.getElementById('cfgServerIp').value.trim(),
+      server_port:parseInt(document.getElementById('cfgPort').value)||25565,
+      mc_version:document.getElementById('cfgVersion').value,
+      command:'restart'
+    })
+  });
+  botData.spawn_x=parsedX; botData.spawn_z=parsedZ; botData.bot_name=name;
+  document.getElementById('dashBotNameTitle').textContent=name;
+  document.getElementById('infoName').textContent=name;
+  document.getElementById('infoSpawn').textContent=`X:${parsedX}  Z:${parsedZ}`;
+  document.getElementById('statBehavior').textContent=document.getElementById('cfgBehavior').value;
+  const msg=document.getElementById('saveMsg');
+  msg.style.display='block'; setTimeout(()=>msg.style.display='none',3000);
+  addLog('Config saved. Bot restarting with new settings.','ok');
+}
+async function applySkin(){
+  const name=document.getElementById('customSkin').value.trim();
+  if(!name){alert('Enter a username.');return;}
+  await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}`,{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,Prefer:'return=minimal'},
+    body:JSON.stringify({bot_name:name,command:'restart'})
+  });
+  botData.bot_name=name;
+  document.getElementById('cfgBotName').value=name;
+  document.getElementById('dashBotNameTitle').textContent=name;
+  document.getElementById('infoName').textContent=name;
+  const msg=document.getElementById('skinMsg');
+  msg.style.display='block'; setTimeout(()=>msg.style.display='none',3000);
+  addLog('Skin/username changed to: '+name+'. Restarting...','ok');
+}
+function downloadConfig(){
+  const data=JSON.stringify({
+    bot_name:botData.bot_name,server_ip:botData.server_ip,
+    server_port:botData.server_port,mc_version:botData.mc_version,
+    spawn_x:botData.spawn_x,spawn_z:botData.spawn_z,
+    behavior:botData.behavior,dash_id:botData.dash_id
+  },null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download='config.json'; a.click();
+}
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+</script>
+</body></html>
