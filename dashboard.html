@@ -281,19 +281,34 @@ async function saveConfig() {
   const BAD_WORDS = ['nigger','nigga','fuck','shit','bitch','cunt','faggot','retard'];
   const newName = document.getElementById('cfgBotName').value.trim();
   if (BAD_WORDS.some(w => newName.toLowerCase().includes(w))) { alert('Bot name contains inappropriate words.'); return; }
+
+  const spawnX = document.getElementById('cfgSpawnX').value;
+  const spawnZ = document.getElementById('cfgSpawnZ').value;
+  const parsedX = spawnX === '' ? botData.spawn_x : parseInt(spawnX);
+  const parsedZ = spawnZ === '' ? botData.spawn_z : parseInt(spawnZ);
+
   await fetch(`${SB_URL}/rest/v1/bots?dash_id=eq.${dashId}`, {
     method: 'PATCH',
     headers: { 'Content-Type':'application/json', apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, Prefer:'return=minimal' },
     body: JSON.stringify({
       behavior: document.getElementById('cfgBehavior').value,
-      spawn_x:  parseInt(document.getElementById('cfgSpawnX').value) || 0,
-      spawn_z:  parseInt(document.getElementById('cfgSpawnZ').value) || 0,
+      spawn_x:  parsedX,
+      spawn_z:  parsedZ,
       bot_name: newName,
       command: 'restart'
     })
   });
-  addLog('Config saved. Bot will restart with new settings.', 'ok');
+
+  // Update local botData and display
+  botData.spawn_x = parsedX;
+  botData.spawn_z = parsedZ;
+  botData.bot_name = newName;
+  botData.behavior = document.getElementById('cfgBehavior').value;
+
   document.getElementById('dashBotName').textContent = newName;
+  document.getElementById('dashSpawn').textContent = `X:${parsedX} Z:${parsedZ}`;
+  document.getElementById('dashBehavior').textContent = botData.behavior;
+  addLog(`Config saved — Bot: ${newName}, Spawn: X:${parsedX} Z:${parsedZ}, Behavior: ${botData.behavior}`, 'ok');
 }
 </script>
 </body>
