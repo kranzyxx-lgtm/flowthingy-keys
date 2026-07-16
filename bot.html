@@ -313,10 +313,33 @@ async function createBot() {
 
   if (res.ok) {
     const dashUrl = `${window.location.origin}/dashboard.html?id=${dashId}`;
+
+    // Generate config.json for download
+    const configData = JSON.stringify({
+      bot_name: botName,
+      server_ip: serverIp,
+      server_port: port,
+      mc_version: version,
+      spawn_x: spawnX,
+      spawn_z: spawnZ,
+      behavior,
+      dash_id: dashId
+    }, null, 2);
+    const blob = new Blob([configData], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+
     suc.style.display = 'block';
-    suc.innerHTML = `✅ Bot created! <br><br><b>Save your dashboard link:</b><br>
-      <a href="${dashUrl}" style="color:#44aaff;word-break:break-all">${dashUrl}</a><br><br>
-      <button onclick="navigator.clipboard.writeText('${dashUrl}');this.textContent='Copied!'" style="background:var(--red);color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;font-size:0.85rem">Copy Link</button>`;
+    suc.innerHTML = `
+      ✅ Bot configured!<br><br>
+      <b>Step 1 — Download your config:</b><br>
+      <a href="${url}" download="config.json" style="display:inline-block;margin:8px 0;background:var(--red);color:#fff;padding:8px 18px;border-radius:5px;text-decoration:none;font-weight:700">⬇ Download config.json</a><br><br>
+      <b>Step 2 — Download the bot launcher:</b><br>
+      <a href="FlowThingyBot.zip" download style="display:inline-block;margin:8px 0;background:#222;color:#fff;padding:8px 18px;border-radius:5px;text-decoration:none;font-weight:700;border:1px solid #333">⬇ Download FlowThingyBot.exe</a><br><br>
+      <b>Step 3:</b> Put <code style="background:#111;padding:2px 6px;border-radius:3px;color:#44aaff">config.json</code> in the same folder as the .exe and run it.<br><br>
+      <b>Your dashboard link:</b><br>
+      <a href="${dashUrl}" style="color:#44aaff;word-break:break-all;font-size:0.85rem">${dashUrl}</a><br>
+      <button onclick="navigator.clipboard.writeText('${dashUrl}');this.textContent='Copied!'" style="margin-top:8px;background:var(--red);color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;font-size:0.85rem">Copy Dashboard Link</button>
+    `;
   } else {
     const t = await res.text();
     showErr('Error creating bot: ' + t);
