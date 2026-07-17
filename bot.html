@@ -161,6 +161,10 @@ footer p { font-size: 0.75rem; color: var(--sub); }
     <p class="s-p">Fill in the details below. You'll get a private dashboard link to manage your bot.</p>
     <div class="form-card">
       <div class="form-row">
+        <label>Your Minecraft Username (to link to your account)</label>
+        <input type="text" id="mcUser" placeholder="e.g. KranzyX" maxlength="32" autocomplete="off">
+      </div>
+      <div class="form-row">
         <label>Bot Name</label>
         <input type="text" id="botName" placeholder="e.g. FlowGuard" maxlength="16" autocomplete="off">
       </div>
@@ -307,6 +311,7 @@ async function createBot() {
       behavior,
       owner_pass: btoa(pass),
       status: 'pending',
+      minecraft_user: document.getElementById('mcUser') ? document.getElementById('mcUser').value.trim() : '',
       created_at: new Date().toISOString()
     })
   });

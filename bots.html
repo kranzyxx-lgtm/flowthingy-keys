@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowThingy - My Bots</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#cc1111;--red2:#e52222;--bg:#080808;--bg2:#0e0e0e;--bg3:#151515;--line:#1f1f1f;--text:#efefef;--sub:#6b6b6b;--green:#3dba72}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-bottom:1px solid var(--line)}
+.logo{font-size:1.1rem;font-weight:800;text-decoration:none}.logo .f{color:var(--red)}.logo .t{color:#fff}
+.nav-btn{background:var(--red);color:#fff;padding:7px 17px;border-radius:5px;font-size:.82rem;font-weight:700;text-decoration:none}
+.page{max-width:900px;margin:0 auto;padding:60px 20px;text-align:center}
+.greeting{font-size:1.3rem;font-weight:700;margin-bottom:8px;color:var(--text)}
+.sub{font-size:.9rem;color:var(--sub);margin-bottom:48px}
+
+/* Login form */
+.login-card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:32px;max-width:360px;margin:0 auto;text-align:left}
+.login-card h2{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.login-card p{font-size:.82rem;color:var(--sub);margin-bottom:20px}
+.inp{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--line);border-radius:7px;color:var(--text);font-size:.875rem;font-family:'Space Grotesk',sans-serif;outline:none;margin-bottom:12px;transition:border-color .15s}
+.inp:focus{border-color:var(--red)}.inp::placeholder{color:#333}
+.btn{width:100%;padding:10px;background:var(--red);color:#fff;border:none;border-radius:7px;font-size:.875rem;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer}
+.btn:hover{background:var(--red2)}
+.err{color:#ff5555;font-size:.78rem;margin-bottom:8px;display:none}
+
+/* Bot picker */
+#picker{display:none}
+.bots-row{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;margin-bottom:40px}
+.bot-card{width:100px;cursor:pointer;text-align:center;transition:transform .2s}
+.bot-card:hover{transform:translateY(-4px)}
+.bot-avatar{width:80px;height:80px;border-radius:50%;background:var(--bg3);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.6rem;font-weight:900;transition:border-color .2s;position:relative;overflow:hidden}
+.bot-card:hover .bot-avatar{border-color:var(--red)}
+.bot-avatar.online{border-color:var(--green)}
+.bot-dot{position:absolute;bottom:4px;right:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--bg3)}
+.bot-dot.online{background:var(--green)}.bot-dot.offline{background:#555}.bot-dot.pending{background:#e8a030}
+.bot-name{font-size:.78rem;font-weight:600;color:var(--sub)}
+.add-bot{width:80px;height:80px;border-radius:50%;background:var(--bg3);border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.8rem;color:var(--sub);cursor:pointer;transition:all .2s}
+.add-bot:hover{border-color:var(--red);color:var(--red)}
+.add-label{font-size:.78rem;color:var(--sub)}
+.key-warn{background:rgba(204,17,17,.1);border:1px solid rgba(204,17,17,.3);border-radius:8px;padding:14px 18px;font-size:.82rem;color:#ff8888;margin-bottom:24px;display:none}
+.bot-count{font-size:.75rem;color:var(--sub);margin-bottom:24px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.page{animation:fadeUp .4s ease}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html"><span class="f">Flow</span><span class="t">Thingy</span></a>
+  <a class="nav-btn" href="bot.html">Create Bot</a>
+</nav>
+<div class="page">
+  <!-- Login -->
+  <div id="loginSection">
+    <div class="greeting">Welcome to FlowThingy Bots</div>
+    <p class="sub">Sign in with your 24h key to access your bots.</p>
+    <div class="login-card">
+      <h2>Sign In</h2>
+      <p>Enter your active FlowThingy key to manage your bots.</p>
+      <div class="err" id="loginErr"></div>
+      <input class="inp" type="text" id="keyInput" placeholder="FT-XXXX-XXXX-XXXX-XXXX" onkeydown="if(event.key==='Enter')signIn()">
+      <button class="btn" onclick="signIn()">Access My Bots</button>
+    </div>
+  </div>
+
+  <!-- Picker -->
+  <div id="picker">
+    <div class="greeting" id="pickerGreeting">Hello! Select a bot to manage</div>
+    <p class="sub" id="pickerSub"></p>
+    <div class="key-warn" id="keyWarn">Your key has expired. <a href="step1.html" style="color:var(--red)">Get a new key</a> to create new bots. Existing bots still work.</div>
+    <div class="bot-count" id="botCount"></div>
+    <div class="bots-row" id="botsRow"></div>
+  </div>
+</div>
+
+<script>
+const SB_URL="https://azezkzvjpgcvrubbwuep.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZXprenZqcGdjdnJ1YmJ3dWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NTM0OTQsImV4cCI6MjA5OTQyOTQ5NH0.ZZMvTSubWXui--aiHx1LVtRDHYEKTQGc5sY8RgVLKVQ";
+const MAX_BOTS=10;
+let currentKey=null, mcUser=null;
+
+async function signIn(){
+  const key=document.getElementById('keyInput').value.trim();
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!key){err.textContent='Enter your key.';err.style.display='block';return;}
+
+  // Validate key against Supabase licenses table
+  const res=await fetch(`${SB_URL}/rest/v1/licenses?key=eq.${encodeURIComponent(key)}&select=*`,
+    {headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const rows=await res.json();
+  if(!rows||rows.length===0){err.textContent='Invalid key.';err.style.display='block';return;}
+
+  const lic=rows[0];
+  currentKey=key;
+  mcUser=lic.minecraft_user;
+  const expired=new Date(lic.expires_at)<new Date();
+
+  document.getElementById('loginSection').style.display='none';
+  document.getElementById('picker').style.display='block';
+  document.getElementById('pickerGreeting').textContent=`Hello, ${mcUser}! Select a bot to manage`;
+  document.getElementById('pickerSub').textContent=expired?'Your key is expired — existing bots still work':'Key valid until '+new Date(lic.expires_at).toLocaleDateString();
+  if(expired) document.getElementById('keyWarn').style.display='block';
+
+  loadBots(mcUser, expired);
+  localStorage.setItem('ft_bot_key', key);
+  localStorage.setItem('ft_bot_user', mcUser);
+}
+
+async function loadBots(user, keyExpired){
+  const res=await fetch(`${SB_URL}/rest/v1/bots?minecraft_user=eq.${encodeURIComponent(user)}&select=dash_id,bot_name,status,server_ip`,
+    {headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}});
+  const bots=await res.json()||[];
+  document.getElementById('botCount').textContent=`${bots.length} / ${MAX_BOTS} bots`;
+
+  const row=document.getElementById('botsRow');
+  row.innerHTML='';
+
+  bots.forEach(bot=>{
+    const initials=bot.bot_name.slice(0,2).toUpperCase();
+    const hue=Math.abs(bot.bot_name.split('').reduce((a,c)=>a+c.charCodeAt(0),0))%360;
+    const card=document.createElement('div');
+    card.className='bot-card';
+    card.innerHTML=`
+      <div class="bot-avatar ${bot.status}" style="background:hsl(${hue},40%,20%)">
+        <span style="color:hsl(${hue},80%,70%);font-size:1.3rem">${initials}</span>
+        <div class="bot-dot ${bot.status}"></div>
+      </div>
+      <div class="bot-name">${bot.bot_name}</div>
+      <div style="font-size:.68rem;color:var(--sub);margin-top:2px">${bot.server_ip}</div>`;
+    card.onclick=()=>window.location.href=`dashboard.html?id=${bot.dash_id}`;
+    row.appendChild(card);
+  });
+
+  // Add bot button (if under limit and key valid)
+  if(!keyExpired && bots.length<MAX_BOTS){
+    const addCard=document.createElement('div');
+    addCard.className='bot-card';
+    addCard.innerHTML=`<div class="add-bot">+</div><div class="add-label">Add Bot</div>`;
+    addCard.onclick=()=>window.location.href='bot.html';
+    row.appendChild(addCard);
+  }
+}
+
+// Auto sign in if key saved
+window.addEventListener('load',()=>{
+  const saved=localStorage.getItem('ft_bot_key');
+  if(saved){document.getElementById('keyInput').value=saved;signIn();}
+});
+</script>
+</body>
+</html>

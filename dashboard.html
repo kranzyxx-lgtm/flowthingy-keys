@@ -30,7 +30,17 @@ nav{height:56px;padding:0 28px;display:flex;align-items:center;justify-content:s
 .err{color:#ff5555;font-size:0.8rem;margin-bottom:10px;display:none}
 
 /* DASH LAYOUT */
-.dash{display:none;max-width:1000px;margin:0 auto;padding:28px 20px}
+.dash{display:none;height:calc(100vh - 56px);display:flex}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 0;flex-shrink:0}
+.sidebar-bot{padding:16px 16px 12px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.sidebar-bot-name{font-size:.95rem;font-weight:700;margin-bottom:2px}
+.sidebar-bot-server{font-size:.72rem;color:var(--sub)}
+.nav-item{padding:9px 16px;font-size:.85rem;font-weight:500;cursor:pointer;color:var(--sub);border-radius:0;transition:all .15s;display:flex;align-items:center;gap:10px;margin:1px 8px;border-radius:6px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(204,17,17,.12);color:var(--red);font-weight:600}
+.nav-section{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--sub);padding:12px 16px 4px}
+.main-content{flex:1;overflow-y:auto;padding:24px}
+.main-content::-webkit-scrollbar{width:4px}.main-content::-webkit-scrollbar-thumb{background:#222}
 
 /* BOT HEADER */
 .bot-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;animation:fadeUp .4s ease}
@@ -118,44 +128,57 @@ select option{background:var(--bg3)}
 </div>
 
 <!-- DASHBOARD -->
-<div class="dash" id="dashWrap">
-  <div class="bot-header">
-    <div>
-      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:6px">Bot Dashboard</div>
-      <div class="bot-title"><span class="f">Flow</span><span class="t">Thingy</span> <span id="dashBotNameTitle" style="color:var(--sub);font-weight:500;font-size:1.1rem"></span></div>
+<div class="dash" id="dashWrap" style="display:none">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-bot">
+      <div class="status-pill pending" id="statusBadge" style="margin-bottom:8px"><span class="dot"></span><span id="statusText">Pending</span></div>
+      <div class="sidebar-bot-name" id="dashBotNameTitle">Bot</div>
+      <div class="sidebar-bot-server" id="sidebarServer"></div>
     </div>
-    <span class="status-pill pending" id="statusBadge"><span class="dot"></span><span id="statusText">Pending</span></span>
+    <div class="nav-section">Control</div>
+    <div class="nav-item active" onclick="switchTab('overview',this)">Overview</div>
+    <div class="nav-item" onclick="switchTab('logs',this)">Live Log</div>
+    <div class="nav-section">Settings</div>
+    <div class="nav-item" onclick="switchTab('config',this)">Configure</div>
+    <div class="nav-item" onclick="switchTab('skin',this)">Bot Skin</div>
+    <div class="nav-item" onclick="switchTab('info',this)">Info</div>
+    <div style="flex:1"></div>
+    <div style="padding:12px 8px">
+      <a href="bots.html" style="display:block;text-align:center;padding:8px;font-size:.78rem;color:var(--sub);text-decoration:none;border:1px solid var(--line);border-radius:6px">My Bots</a>
+    </div>
   </div>
 
-  <!-- Stats row -->
-  <div class="grid-3" id="statsRow">
-    <div class="card"><div class="card-label">Server</div><div class="card-value" id="statServer" style="font-size:.85rem">—</div></div>
-    <div class="card"><div class="card-label">Uptime</div><div class="card-value green" id="statUptime">00:00:00</div></div>
-    <div class="card"><div class="card-label">Behavior</div><div class="card-value" id="statBehavior">—</div></div>
-  </div>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Overview tab -->
+    <div class="tab-panel active" id="tab-overview">
+      <div style="font-size:1.2rem;font-weight:800;margin-bottom:20px" id="overviewTitle">Bot Overview</div>
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="card"><div class="card-label">Status</div><div class="card-value" id="statStatusCard">—</div></div>
+        <div class="card"><div class="card-label">Uptime</div><div class="card-value green" id="statUptime">00:00:00</div></div>
+        <div class="card"><div class="card-label">Server</div><div class="card-value" id="statServer" style="font-size:.82rem">—</div></div>
+      </div>
+      <div class="grid-3" style="margin-bottom:24px">
+        <div class="card"><div class="card-label">Behavior</div><div class="card-value" id="statBehavior">—</div></div>
+        <div class="card"><div class="card-label">Spawn</div><div class="card-value" id="statSpawn" style="font-size:.85rem">—</div></div>
+        <div class="card"><div class="card-label">Version</div><div class="card-value" id="statVersion">—</div></div>
+      </div>
+      <div class="section-title">Bot Controls</div>
+      <div class="controls">
+        <button class="ctrl start" onclick="controlBot('start')">Start Bot</button>
+        <button class="ctrl stop"  onclick="controlBot('stop')">Stop Bot</button>
+        <button class="ctrl restart" onclick="controlBot('restart')">Restart</button>
+      </div>
+      <p style="font-size:.78rem;color:var(--sub);margin-top:8px">Controls send commands to the bot exe running on your PC. Make sure the exe is open.</p>
+    </div>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button class="ctrl start"   onclick="controlBot('start')">Start</button>
-    <button class="ctrl stop"    onclick="controlBot('stop')">Stop</button>
-    <button class="ctrl restart" onclick="controlBot('restart')">Restart</button>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('logs',this)">Live Log</div>
-    <div class="tab" onclick="switchTab('config',this)">Configure</div>
-    <div class="tab" onclick="switchTab('skin',this)">Bot Skin</div>
-    <div class="tab" onclick="switchTab('info',this)">Info</div>
-  </div>
-
-  <!-- Log tab -->
-  <div class="tab-panel active" id="tab-logs">
-    <div class="card-label" style="margin-bottom:8px">Bot Activity</div>
-    <div class="log-box" id="logBox"><div class="ll-info">Waiting for bot activity...</div></div>
-  </div>
-
-  <!-- Config tab -->
+    <!-- Log tab -->
+    <div class="tab-panel" id="tab-logs">
+      <div style="font-size:1.2rem;font-weight:800;margin-bottom:16px">Live Log</div>
+      <div class="log-box" id="logBox"><div class="ll-info">Waiting for bot activity...</div></div>
+      <p style="font-size:.75rem;color:var(--sub);margin-top:8px">Log refreshes every 4 seconds from Supabase.</p>
+    </div>
   <div class="tab-panel" id="tab-config">
     <div class="section-title">Bot Settings</div>
     <div class="grid-2">
@@ -262,27 +285,7 @@ async function login(){
 }
 function showErr(m){const e=document.getElementById('loginErr');e.textContent=m;e.style.display='block';}
 
-function loadDash(){
-  document.getElementById('dashBotNameTitle').textContent=botData.bot_name;
-  document.getElementById('statServer').textContent=`${botData.server_ip}:${botData.server_port}`;
-  document.getElementById('statBehavior').textContent=botData.behavior;
-  document.getElementById('cfgBotName').value=botData.bot_name;
-  document.getElementById('cfgBehavior').value=botData.behavior;
-  document.getElementById('cfgSpawnX').value=botData.spawn_x;
-  document.getElementById('cfgSpawnZ').value=botData.spawn_z;
-  document.getElementById('cfgServerIp').value=botData.server_ip;
-  document.getElementById('cfgPort').value=botData.server_port;
-  document.getElementById('cfgVersion').value=botData.mc_version;
-  document.getElementById('infoName').textContent=botData.bot_name;
-  document.getElementById('infoServer').textContent=`${botData.server_ip}:${botData.server_port}`;
-  document.getElementById('infoSpawn').textContent=`X:${botData.spawn_x}  Z:${botData.spawn_z}`;
-  document.getElementById('infoVersion').textContent=botData.mc_version;
-  document.getElementById('infoDashId').textContent=botData.dash_id;
-  document.getElementById('infoCreated').textContent=new Date(botData.created_at).toLocaleDateString();
-  updateStatus(botData.status);
-  buildSkins();
-  addLog('Dashboard loaded for '+botData.bot_name,'info');
-}
+function loadDash(){} // replaced below
 
 function buildSkins(){
   const grid=document.getElementById('skinGrid');
@@ -409,10 +412,36 @@ function downloadConfig(){
   a.download='config.json'; a.click();
 }
 function switchTab(name,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
 }
-</script>
+
+function loadDash(){
+  document.getElementById('dashBotNameTitle').textContent=botData.bot_name;
+  document.getElementById('sidebarServer').textContent=botData.server_ip;
+  document.getElementById('statServer').textContent=`${botData.server_ip}:${botData.server_port}`;
+  document.getElementById('statBehavior').textContent=botData.behavior;
+  document.getElementById('statSpawn').textContent=`X:${botData.spawn_x} Z:${botData.spawn_z}`;
+  document.getElementById('statVersion').textContent=botData.mc_version;
+  document.getElementById('statStatusCard').textContent=botData.status;
+  document.getElementById('cfgBotName').value=botData.bot_name;
+  document.getElementById('cfgBehavior').value=botData.behavior;
+  document.getElementById('cfgSpawnX').value=botData.spawn_x;
+  document.getElementById('cfgSpawnZ').value=botData.spawn_z;
+  document.getElementById('cfgServerIp').value=botData.server_ip;
+  document.getElementById('cfgPort').value=botData.server_port;
+  document.getElementById('cfgVersion').value=botData.mc_version;
+  document.getElementById('infoName').textContent=botData.bot_name;
+  document.getElementById('infoServer').textContent=`${botData.server_ip}:${botData.server_port}`;
+  document.getElementById('infoSpawn').textContent=`X:${botData.spawn_x}  Z:${botData.spawn_z}`;
+  document.getElementById('infoVersion').textContent=botData.mc_version;
+  document.getElementById('infoDashId').textContent=botData.dash_id;
+  document.getElementById('infoCreated').textContent=new Date(botData.created_at).toLocaleDateString();
+  document.getElementById('overviewTitle').textContent=botData.bot_name+' Overview';
+  updateStatus(botData.status);
+  buildSkins();
+  addLog('Dashboard loaded for '+botData.bot_name,'info');
+}</script>
 </body></html>
