@@ -179,77 +179,75 @@ select option{background:var(--bg3)}
       <div class="log-box" id="logBox"><div class="ll-info">Waiting for bot activity...</div></div>
       <p style="font-size:.75rem;color:var(--sub);margin-top:8px">Log refreshes every 4 seconds from Supabase.</p>
     </div>
-  <div class="tab-panel" id="tab-config">
-    <div class="section-title">Bot Settings</div>
-    <div class="grid-2">
-      <div><label>Bot Name</label><input class="inp" type="text" id="cfgBotName" maxlength="16" placeholder="FlowBot"></div>
-      <div><label>Behavior</label>
-        <select id="cfgBehavior">
-          <option value="wander">Wander randomly</option>
-          <option value="jump">Jump randomly</option>
-          <option value="mine">Break nearby blocks</option>
-          <option value="idle">Stay idle</option>
-        </select>
-      </div>
-      <div><label>Spawn X</label><input class="inp" type="number" id="cfgSpawnX" placeholder="0"></div>
-      <div><label>Spawn Z</label><input class="inp" type="number" id="cfgSpawnZ" placeholder="0"></div>
-    </div>
-    <div class="section-title" style="margin-top:18px">Server Settings</div>
-    <div class="grid-2">
-      <div><label>Server IP</label><input class="inp" type="text" id="cfgServerIp" placeholder="play.example.net"></div>
-      <div><label>Port</label><input class="inp" type="number" id="cfgPort" placeholder="25565"></div>
-      <div><label>Minecraft Version</label>
-        <select id="cfgVersion">
-          <option value="1.21.5">1.21.5</option>
-          <option value="1.21.4">1.21.4</option>
-          <option value="1.21.1">1.21.1</option>
-          <option value="1.20.4">1.20.4</option>
-          <option value="1.20.1">1.20.1</option>
-          <option value="1.19.4">1.19.4</option>
-          <option value="1.18.2">1.18.2</option>
-          <option value="1.16.5">1.16.5</option>
-          <option value="1.8.9">1.8.9</option>
-        </select>
-      </div>
-    </div>
-    <button class="save-btn" onclick="saveConfig()">Save and Restart Bot</button>
-    <div class="success-msg" id="saveMsg">Settings saved! Bot is restarting...</div>
-  </div>
 
-  <!-- Skin tab -->
-  <div class="tab-panel" id="tab-skin">
-    <div class="section-title">Bot Skin</div>
-    <p style="font-size:.85rem;color:var(--sub);margin-bottom:16px">Choose a skin for your bot. The bot will use this username when connecting.</p>
-    <div class="skin-grid" id="skinGrid"></div>
-    <div style="margin-top:16px">
-      <label>Custom Username (changes bot name + skin)</label>
-      <div style="display:flex;gap:10px;margin-top:6px">
-        <input class="inp" type="text" id="customSkin" placeholder="Enter any Minecraft username" style="margin:0;flex:1">
-        <button class="save-btn" style="margin:0;white-space:nowrap" onclick="applySkin()">Apply Skin</button>
+    <div class="tab-panel" id="tab-config">
+      <div style="font-size:1.2rem;font-weight:800;margin-bottom:20px">Configure Bot</div>
+      <div class="section-title">Bot Settings</div>
+      <div class="grid-2">
+        <div><label>Bot Name</label><input class="inp" type="text" id="cfgBotName" maxlength="16" placeholder="FlowBot"></div>
+        <div><label>Behavior</label>
+          <select id="cfgBehavior">
+            <option value="wander">Wander randomly</option>
+            <option value="jump">Jump randomly</option>
+            <option value="mine">Break nearby blocks</option>
+            <option value="idle">Stay idle</option>
+          </select>
+        </div>
+        <div><label>Spawn X</label><input class="inp" type="number" id="cfgSpawnX" placeholder="0"></div>
+        <div><label>Spawn Z</label><input class="inp" type="number" id="cfgSpawnZ" placeholder="0"></div>
       </div>
-      <p style="font-size:.75rem;color:var(--sub);margin-top:8px">The bot will join with this username and use that player's skin.</p>
+      <div class="section-title" style="margin-top:18px">Server Settings</div>
+      <div class="grid-2">
+        <div><label>Server IP</label><input class="inp" type="text" id="cfgServerIp" placeholder="play.example.net"></div>
+        <div><label>Port</label><input class="inp" type="number" id="cfgPort" placeholder="25565"></div>
+        <div><label>MC Version</label>
+          <select id="cfgVersion">
+            <option value="1.21.5">1.21.5</option><option value="1.21.4">1.21.4</option>
+            <option value="1.21.1">1.21.1</option><option value="1.20.4">1.20.4</option>
+            <option value="1.20.1">1.20.1</option><option value="1.19.4">1.19.4</option>
+            <option value="1.18.2">1.18.2</option><option value="1.8.9">1.8.9</option>
+          </select>
+        </div>
+      </div>
+      <button class="save-btn" onclick="saveConfig()">Save and Restart Bot</button>
+      <div class="success-msg" id="saveMsg">Saved! Restarting...</div>
     </div>
-    <div class="success-msg" id="skinMsg">Skin applied! Bot will restart with new username.</div>
-  </div>
 
-  <!-- Info tab -->
-  <div class="tab-panel" id="tab-info">
-    <div class="section-title">Bot Information</div>
-    <div class="grid-2">
-      <div class="card"><div class="card-label">Bot Name</div><div class="card-value" id="infoName">—</div></div>
-      <div class="card"><div class="card-label">Server</div><div class="card-value" style="font-size:.85rem" id="infoServer">—</div></div>
-      <div class="card"><div class="card-label">Spawn Point</div><div class="card-value" id="infoSpawn">—</div></div>
-      <div class="card"><div class="card-label">MC Version</div><div class="card-value" id="infoVersion">—</div></div>
-      <div class="card"><div class="card-label">Bot ID</div><div class="card-value" style="font-size:.72rem;letter-spacing:0" id="infoDashId">—</div></div>
-      <div class="card"><div class="card-label">Created</div><div class="card-value" style="font-size:.8rem" id="infoCreated">—</div></div>
+    <!-- Skin tab -->
+    <div class="tab-panel" id="tab-skin">
+      <div style="font-size:1.2rem;font-weight:800;margin-bottom:16px">Bot Skin</div>
+      <p style="font-size:.85rem;color:var(--sub);margin-bottom:20px">Choose a skin username. The bot joins with this name and uses that player's skin.</p>
+      <div class="skin-grid" id="skinGrid"></div>
+      <div style="margin-top:16px">
+        <label>Custom Username</label>
+        <div style="display:flex;gap:10px;margin-top:6px">
+          <input class="inp" type="text" id="customSkin" placeholder="Any Minecraft username" style="margin:0;flex:1">
+          <button class="save-btn" style="margin:0;white-space:nowrap" onclick="applySkin()">Apply</button>
+        </div>
+      </div>
+      <div class="success-msg" id="skinMsg">Skin applied! Restarting...</div>
     </div>
-    <div style="margin-top:16px">
-      <div class="section-title">Download Config</div>
-      <p style="font-size:.85rem;color:var(--sub);margin-bottom:12px">Re-download your config.json if you need to reinstall the bot exe.</p>
-      <button class="save-btn" onclick="downloadConfig()">Download config.json</button>
+
+    <!-- Info tab -->
+    <div class="tab-panel" id="tab-info">
+      <div style="font-size:1.2rem;font-weight:800;margin-bottom:20px">Bot Info</div>
+      <div class="grid-2">
+        <div class="card"><div class="card-label">Bot Name</div><div class="card-value" id="infoName">—</div></div>
+        <div class="card"><div class="card-label">Server</div><div class="card-value" style="font-size:.82rem" id="infoServer">—</div></div>
+        <div class="card"><div class="card-label">Spawn</div><div class="card-value" id="infoSpawn">—</div></div>
+        <div class="card"><div class="card-label">Version</div><div class="card-value" id="infoVersion">—</div></div>
+        <div class="card"><div class="card-label">Created</div><div class="card-value" style="font-size:.8rem" id="infoCreated">—</div></div>
+        <div class="card"><div class="card-label">Bot ID</div><div class="card-value" style="font-size:.68rem;letter-spacing:0" id="infoDashId">—</div></div>
+      </div>
+      <div style="margin-top:20px">
+        <div class="section-title">Re-download Config</div>
+        <p style="font-size:.82rem;color:var(--sub);margin-bottom:12px">Need to reinstall? Download your config.json again.</p>
+        <button class="save-btn" onclick="downloadConfig()">Download config.json</button>
+      </div>
     </div>
-  </div>
-</div>
+
+  </div><!-- end main-content -->
+</div><!-- end dash -->
 
 <script>
 const SB_URL="https://azezkzvjpgcvrubbwuep.supabase.co";
@@ -266,7 +264,10 @@ const SKINS=[
   {name:'Herobrine',url:'https://crafatar.com/avatars/f84c6a790a4e45e0879bcd49ebd4c4e2?size=64&overlay'},
 ];
 
-if(!dashId){document.getElementById('loginWrap').innerHTML='<div style="text-align:center;padding:60px;color:var(--sub)">No bot ID. <a href="bot.html" style="color:var(--red)">Create a bot</a>.</div>';}
+if(!dashId){
+  // Redirect to bot picker instead of showing error
+  window.location.href='bots.html';
+}
 
 async function login(){
   const pass=document.getElementById('passInput').value;
